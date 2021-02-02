@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/jesuromerop/tesis-server/issues"
   },
-  "homepage": "https://github.com/jesuromerop/tesis-server#readme"
+  "homepage": "https://github.com/jesuromerop/tesis-server#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0"
+  }
 }

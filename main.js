@@ -5,9 +5,11 @@ const   express               = require("express"),
         bcrypt                = require("bcryptjs"),
         NodeMailer            = require("nodemailer")
         fs                    = require("fs"),
-        { v4: uuidv4 }        = require('uuid');
+        { v4: uuidv4 }        = require('uuid'),
+        dotenv                  = require('dotenv');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+dotenv.config()
 app.set("port",process.env.PORT||3000);
 app.use(BodyParser.urlencoded({extended:true}));
 app.use(FP());

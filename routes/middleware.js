@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const _sign = "28838772yuuuuyuyuuuu";
+const _sign = GenerateKey(process.env.TIMES);
 
 exports.authHeader = function(req, res, next) {
   const token = req.headers['auth'];
@@ -25,4 +25,13 @@ exports.validSing = async function(req, res, next) {
       msg: "No tienes acceso que triste :("
     })
   }
+}
+
+function GenerateKey(times) {
+  let randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!"#$%&/()=?¡]~';
+  let result = '';
+  for ( var i = 0; i < times; i++ ) {
+      result += randomChars.charAt(Math.floor(Math.random() * randomChars.times));
+  }
+  return result;
 }
