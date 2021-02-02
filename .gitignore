@@ -58,3 +58,5 @@ dist
 .tern-port
 
 .env
+
+.node_modules
