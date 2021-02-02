@@ -1,2 +1,2 @@
 # tesis-server
-Repositorio para el servidor backend de la plataforma
+Repositorio para el servidor backend del sistema de control de acceso
