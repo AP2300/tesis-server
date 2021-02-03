@@ -6,6 +6,9 @@ const   express               = require("express"),
         NodeMailer            = require("nodemailer")
         fs                    = require("fs"),
         { v4: uuidv4 }        = require('uuid'),
+        passport              = require("passport"),
+        session               = require("express-session"),
+        MySqlStore            = require("express-mysql-session")
         dotenv                  = require('dotenv');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -14,6 +17,10 @@ app.set("port",process.env.PORT||3000);
 app.use(BodyParser.urlencoded({extended:true}));
 app.use(FP());
 app.use(express.static('src'));
+app.use(session({ secret: 'o%pQH48$#zw$5J8kKk^Kk6szs9!Y6L^N&VhyR3oUD%dtbu8a!#4WAe93partp2tMXwQTV9p&sMHpaz',resave: true, saveUninitialized:true})); // session secret
+app.use(passport.initialize());
+app.use(passport.session()); 
+require("./routes/passport")
 
 app.use(BodyParser.json({'limit':'1mb'}));
 app.disable('x-powered-by');
@@ -34,6 +41,8 @@ let transporter = NodeMailer.createTransport({
 });
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+const register = require("./routes/register");
+app.post("/register",register.RegisterUser)
 
 
 app.listen(app.get("port"), function(err){

@@ -1,5 +1,6 @@
-const token = require("./../../models/token")
-const register = require("./register");
+const { readdirSync } = require("fs");
+const passport = require("passport");
+// const token = require("./../../models/token")
 
 module.exports.ValidateData =(req, res, next)=> {
     const dataB=req.body;
@@ -20,17 +21,13 @@ module.exports.ValidateData =(req, res, next)=> {
     next();
 }
 
-module.exports.RegisterUser = (req,res)=>{
+module.exports.RegisterUser = (req,res,next)=>{
     const dataB=req.body;
-    register.register(dataB)
-    .then(data=>{
-        res.send(data)
-    })
-    .catch(err=>{
-        console.log(err);
-        res.send({
-            success:false,
-            msg: "Error en registro"
-        })
-    })
+    passport.authenticate("local-registro", {
+        successRedirect: "/home",
+        failureRedirect: "/algo",
+        failureFlash:true
+    }, ()=>{
+        
+    })(req,res,next)
 }
