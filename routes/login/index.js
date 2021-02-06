@@ -1,1 +1,1 @@
-module.exports = require('./login_handler');
+module.exports = require('./login_handler')

@@ -1,63 +1,61 @@
-//const token = require("./../../models/token")
-const login = require("./login");
-const passport = require("passport");
-const bcrypt = require("bcryptjs");
+const token     = require('../../models/token'); 
+const login     = require('./login');
+const bcrypt    = require('bcryptjs');
 
-module.exports.ValidateData =(req, res, next)=> {
+module.exports.validData = (req,res,next) =>{
+    const {email, pass} = req.body;
 
-    if(!req.body.email){
+    if(!email){
         return res.send({
-            success:false,
-            msg:"el email se encuentra vacio"
+            success: false,
+            msg: "El Correo esta vacio"
         })
-    }
-
-    if(!req.body.clave){
+    } 
+    if(!pass){
         return res.send({
-            success:false,
-            msg:"la contraseña esta vacia"
+            success: false,
+            msg: "La Clave esta vacio"
         })
     }
 
     next();
 }
 
-module.exports.LogUser = (req,res)=>{
-    login.login(req.body.email)
-    .then(async (data) => {
+module.exports.loginUser = (req,res) =>{
+    const {email, pass} = req.body;
+
+    login.login(email)
+    .then(async (data) =>{
         if(data == undefined){
             res.send({
-                success:false,
-                msg:"este usuario no existe"
-            })
+                success: false,
+                msg: 'El Usuario no existe'
+            }) 
         }else{
-            bcrypt.compare(req.body.clave, data.clave, (err,result)=>{
+            bcrypt.compare(String(pass), data.pass, (err, result) =>{
                 if(err){
                     console.log(err);
-                }else if(result){
+                } else if(result){
                     const payLoad = {
-                        id: data.id,
-                        email: data.email,
-                        admin: data.rol
+                        id: data.IDUsers,
+                        email: data.email
                     }
-                    
+
                     token.signToken(payLoad)
                     .then(token =>{
-                        console.log(token);
-
                         res.send({
                             success: true,
-                            token:token,
+                            token:token
                         })
                     })
                     .catch(err =>{
-                        console.log(err);
+                        console.error("Error al firmar el Token",err)
                         res.send({
-                            success:false,
-                            msg: "Error en el login"
+                            success: false,
+                            msg: "Error en el token"
                         })
                     })
-                }else{
+                } else{
                     console.error("La Clave es Incorrecta")
                     res.send({
                         success: false,
@@ -66,23 +64,13 @@ module.exports.LogUser = (req,res)=>{
                 }
             })
         }
+        
     })
-    .catch(err=>{
-        console.log(err);
+    .catch(err =>{
+        console.error("Error al realizar el login",err);
         res.send({
-            success:false,
-            msg: "Error en login"
+            success: false,
+            msg: "Error al realizar el login"
         })
     })
-}
-
-module.exports.singInUser = (req,res,next)=>{
-    const dataB=req.body;
-    passport.authenticate("local-singin", {
-        successRedirect: "/Inicio Sesion",
-        failureRedirect: "/fallo",
-        failureFlash:true
-    }, ()=>{
-        
-    })(req,res,next)
 }

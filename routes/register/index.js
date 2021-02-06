@@ -1,1 +1,1 @@
-module.exports = require("./register_handler");
+module.exports = require('./register_handler')

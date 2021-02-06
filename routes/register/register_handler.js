@@ -1,36 +1,49 @@
-const { readdirSync } = require("fs");
-const passport = require("passport");
-// const token = require("./../../models/token")
+const register = require('./register');
 
-module.exports.ValidateData =(req, res, next)=> {
-    const dataB=req.body;
-    if(!dataB.email){
+module.exports.validData = (req,res,next) =>{
+    const {name, email, pass} = req.body;
+
+    if(!name){
         return res.send({
-            success:false,
-            msg:"el email se encuentra vacio"
+            success: false,
+            msg: "El Nombre esta vacio"
         })
-    }
-
-    if(!dataB.clave){
+    } 
+    if(!email){
         return res.send({
-            success:false,
-            msg:"la contraseña esta vacia"
+            success: false,
+            msg: "El Correo esta vacio"
+        })
+    } 
+    if(!pass){
+        return res.send({
+            success: false,
+            msg: "La Clave esta vacio"
         })
     }
 
     next();
 }
 
-module.exports.RegisterUser = (req,res,next)=>{
-    const dataB=req.body;
-    passport.authenticate("local", (err, user, info)=>{
-        if(!user) console.log("user vacio");
-        if(info) console.log(info);
-        if(err) console.log(err);
-        req.logIn(user, (err)=>{
-            if(err) return next(err)
-            else res.status(200).json({errors:false, user: user})
+module.exports.registerUser = (req,res) =>{
+    const {name, email, pass} = req.body;
+
+    register.register(name,email,pass)
+    .then(data =>{
+        if(data.query){
+            console.log('Un Usuario fue Registrado con estos datos ')
+            res.send({
+                success: true,
+                data: data,
+                msg: 'El Usuario fue Registrado Satisfactoriamente'
+            })
+        } 
+    })
+    .catch(err =>{
+        console.error("Aqui",err);
+        res.send({
+            success: false,
+            msg: err.msg
         })
-    })(req,res,next)
-    next();
+    })
 }

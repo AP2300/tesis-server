@@ -1,21 +1,17 @@
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
-const db = require('../../connections/Dbconection');
-const bcrypt = require("bcryptjs");
+const DB = require('../../config/DB_conecction');
 
-exports.login = function(email) {
-  return new Promise( (resolve, reject) => {
-    db.query(`SELECT usuarios.id, usuarios.email, usuarios.clave, roles.nombre AS rol
-    FROM usuarios INNER JOIN roles ON roles.id = usuarios.roles_id
-    WHERE usuarios.email = ?`,[email], (error, result) => {
-
-      if(error) {
-        console.log('error en el login', error.stack);
-        return reject('Error en el login')
-      }
-      console.log(result[0]);
-      resolve(result[0]);
-
+exports.login = (email) => {
+    return new Promise( (resolve, reject) =>{
+        DB.query('SELECT IDUsers, email, pass FROM users WHERE email= ?', [email], (err,res) =>{
+            if(err){
+                console.error('Ha ocurrido un error al solicitar data', err.stack);
+                return reject({
+                    query: false,
+                    msg: 'Ha ocurrido un error en el login'
+                })
+            }
+            console.log(res)
+            resolve(res[0])
+        })
     })
-  })
-}
+};
