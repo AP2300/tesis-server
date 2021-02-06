@@ -17,7 +17,12 @@ app.set("port",process.env.PORT||3000);
 app.use(BodyParser.urlencoded({extended:true}));
 app.use(FP());
 app.use(express.static('src'));
-app.use(session({ secret: 'o%pQH48$#zw$5J8kKk^Kk6szs9!Y6L^N&VhyR3oUD%dtbu8a!#4WAe93partp2tMXwQTV9p&sMHpaz',resave: true, saveUninitialized:true})); // session secret
+app.use(session({ 
+    secret: 'o%pQH48$#zw$5J8kKk^Kk6szs9!Y6L^N&VhyR3oUD%dtbu8a!#4WAe93partp2tMXwQTV9p&sMHpaz',
+    resave: true, 
+    saveUninitialized:true,
+    maxAge: null
+})); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); 
 require("./routes/passport")
@@ -30,6 +35,16 @@ app.all('*', function(_, res, next){
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, auth, Content-Length, X-Requested-With');
     next();
+});
+
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+    User.findById(id, function (err, user) {
+        done(err, user);
+    });
 });
 
 let transporter = NodeMailer.createTransport({
