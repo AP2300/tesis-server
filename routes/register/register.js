@@ -78,7 +78,7 @@ passport.use("local-registro", new LocalStrategy({
     usernameField: "username",
     passwordField: "password",
     passReqToCallback: true
-},async (req, username, password, done)=>{
+},async (req, res, username, password, done)=>{
     const newUser = {
         username,
         password
@@ -88,7 +88,7 @@ passport.use("local-registro", new LocalStrategy({
             if(err){
                 console.log(err);
             }else{
-                console.log(result)
+                console.log(result);
             }
         })
     })

@@ -3,11 +3,24 @@ const LocalStrategy = require("passport-local").Strategy;
 const db = require('../connections/Dbconection');
 const bcrypt = require("bcryptjs");
 
+passport.serializeUser((user, done) => {
+    console.log(user);
+    done(null, user);
+});
+  
+passport.deserializeUser((id, done) => {
+    mysqlConnection.query('SELECT * FROM users WHERE id = ?', [id], function (error, results, fields) {
+        if (error) {
+        done(error, false);
+        }
+        done(null, results[0]);  
+    });
+}); 
+
 passport.use("local-registro", new LocalStrategy({
     usernameField: "username",
     passwordField: "password",
-    passReqToCallback: true
-},async (req, username, password, done)=>{
+},async (username, password, done)=>{
     const newUser = {
         username,
         password
@@ -17,11 +30,17 @@ passport.use("local-registro", new LocalStrategy({
             if(err){
                 console.log(err);
             }else{
-                console.log(result)
+                db.query("SELECT * FROM users WHERE id=? ", [result.insertId], (err, result)=>{
+                    if(err){
+                        console.log(err);
+                    }else{
+                        console.log(result);
+                        return done(null, result[0]);
+                    }
+                })
             }
         })
     })
-    
 }))
 
 

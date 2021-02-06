@@ -26,8 +26,10 @@ module.exports.RegisterUser = (req,res,next)=>{
     passport.authenticate("local-registro", {
         successRedirect: "/home",
         failureRedirect: "/algo",
-        failureFlash:true
-    }, ()=>{
+        failureFlash:true,
+        session: true
+    }, (req, res)=>{
         
     })(req,res,next)
+    next();
 }

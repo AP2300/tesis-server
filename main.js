@@ -8,8 +8,9 @@ const   express               = require("express"),
         { v4: uuidv4 }        = require('uuid'),
         passport              = require("passport"),
         session               = require("express-session"),
-        MySqlStore            = require("express-mysql-session")
-        dotenv                  = require('dotenv');
+        MySqlStore            = require("express-mysql-session"),
+        dotenv                = require('dotenv'),
+        LocalStrategy         = require('passport-local').Strategy;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 dotenv.config()
@@ -21,7 +22,8 @@ app.use(session({
     secret: 'o%pQH48$#zw$5J8kKk^Kk6szs9!Y6L^N&VhyR3oUD%dtbu8a!#4WAe93partp2tMXwQTV9p&sMHpaz',
     resave: true, 
     saveUninitialized:true,
-    maxAge: null
+    maxAge: null,
+    cookie: { secure: false }
 })); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); 
@@ -37,15 +39,7 @@ app.all('*', function(_, res, next){
     next();
 });
 
-passport.serializeUser(function(user, done) {
-    done(null, user.id);
-});
 
-passport.deserializeUser(function(id, done) {
-    User.findById(id, function (err, user) {
-        done(err, user);
-    });
-});
 
 let transporter = NodeMailer.createTransport({
     service: "gmail",
@@ -57,8 +51,17 @@ let transporter = NodeMailer.createTransport({
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const register = require("./routes/register");
-app.post("/register",register.RegisterUser)
+app.post("/register",register.RegisterUser, (req,res) => {
+    res.status(200).send("holis");
+})
 
+app.post("/andresesdios", (req,res) => {
+    console.log(req.isAuthenticated());
+    console.log(req.session)
+    console.log(req.session.user);
+    console.log(req["user"]);
+    res.send("holi");
+});
 
 app.listen(app.get("port"), function(err){
     if(err) console.log(err);
