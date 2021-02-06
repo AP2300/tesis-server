@@ -23,13 +23,14 @@ module.exports.ValidateData =(req, res, next)=> {
 
 module.exports.RegisterUser = (req,res,next)=>{
     const dataB=req.body;
-    passport.authenticate("local-registro", {
-        successRedirect: "/home",
-        failureRedirect: "/algo",
-        failureFlash:true,
-        session: true
-    }, (req, res)=>{
-        
+    passport.authenticate("local", (err, user, info)=>{
+        if(!user) console.log("user vacio");
+        if(info) console.log(info);
+        if(err) console.log(err);
+        req.logIn(user, (err)=>{
+            if(err) return next(err)
+            else res.status(200).json({errors:false, user: user})
+        })
     })(req,res,next)
     next();
 }
