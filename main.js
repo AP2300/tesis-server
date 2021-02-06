@@ -42,7 +42,9 @@ let transporter = NodeMailer.createTransport({
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const register = require("./routes/register");
-app.post("/register",register.RegisterUser)
+const login = require("./routes/login");
+app.post("/register",register.RegisterUser);
+app.post("/login",login.singInUser);
 
 
 app.listen(app.get("port"), function(err){

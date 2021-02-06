@@ -1,4 +1,3 @@
-const db = require('./../../connections/Dbconnection');
 const bcrypt = require("bcryptjs");
 
 
@@ -71,7 +70,7 @@ exports.register = function(data) {
 
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const db = require('../connections/Dbconection');
+const db = require('../../connections/Dbconection');
 const bcrypt = require("bcryptjs");
 
 passport.use("local-registro", new LocalStrategy({
