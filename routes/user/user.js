@@ -1,4 +1,4 @@
-const DB = require('../../config/DB_conecction');
+const DB = require('../../connections/Dbconection');
 const bcrypt = require('bcryptjs')
 
 exports.GetData = (email) => {

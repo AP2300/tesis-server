@@ -1,4 +1,4 @@
-const DB = require('../../config/DB_conecction');
+const DB = require('../../connections/Dbconection');
 
 exports.login = (email) => {
     return new Promise( (resolve, reject) =>{

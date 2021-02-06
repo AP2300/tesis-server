@@ -7,10 +7,8 @@ const   express               = require("express"),
         cookieParser          = require("cookie-parser");
         fs                    = require("fs"),
         { v4: uuidv4 }        = require('uuid'),
-        passport              = require("passport"),
         MySqlStore            = require("express-mysql-session"),
         dotenv                = require('dotenv'),
-        LocalStrategy         = require('passport-local').Strategy;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 dotenv.config()
@@ -25,9 +23,6 @@ app.use(require("express-session")({
     maxAge: null,
     cookie: { secure: false }
 })); // session secret
-require("./routes/passport")
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(express.static('src'));
 app.use(BodyParser.json({'limit':'1mb'}));
 app.disable('x-powered-by');
@@ -52,11 +47,9 @@ let transporter = NodeMailer.createTransport({
 const register = require("./routes/register");
 const login = require("./routes/login");
 
-
-app.post("/register",register.RegisterUser, (req,res) => {
-    
-})
-app.post("/login",login.singInUser);
+app.post('/login', login.validData, login.loginUser);
+app.post('/register', register.validData, register.registerUser);
+app.get('/user', user.GetUserData);
 
 app.post("/andresesdios", (req,res) => {
     console.log(req.isAuthenticated());
