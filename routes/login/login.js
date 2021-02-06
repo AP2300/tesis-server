@@ -1,4 +1,7 @@
-const db = require('./../../connections/Dbconnection');
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const db = require('../../connections/Dbconection');
+const bcrypt = require("bcryptjs");
 
 exports.login = function(email) {
   return new Promise( (resolve, reject) => {

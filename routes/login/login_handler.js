@@ -1,5 +1,6 @@
-const token = require("./../../models/token")
+//const token = require("./../../models/token")
 const login = require("./login");
+const passport = require("passport");
 const bcrypt = require("bcryptjs");
 
 module.exports.ValidateData =(req, res, next)=> {
@@ -73,4 +74,15 @@ module.exports.LogUser = (req,res)=>{
             msg: "Error en login"
         })
     })
+}
+
+module.exports.singInUser = (req,res,next)=>{
+    const dataB=req.body;
+    passport.authenticate("local-singin", {
+        successRedirect: "/Inicio Sesion",
+        failureRedirect: "/fallo",
+        failureFlash:true
+    }, ()=>{
+        
+    })(req,res,next)
 }

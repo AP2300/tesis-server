@@ -51,9 +51,12 @@ let transporter = NodeMailer.createTransport({
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const register = require("./routes/register");
+const login = require("./routes/login");
+
 app.post("/register",register.RegisterUser, (req,res) => {
     res.status(200).send("holis");
 })
+app.post("/login",login.singInUser);
 
 app.post("/andresesdios", (req,res) => {
     console.log(req.isAuthenticated());
