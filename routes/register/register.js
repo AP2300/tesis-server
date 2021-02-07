@@ -1,9 +1,9 @@
 const DB = require('../../connections/Dbconection');
 const bcrypt = require('bcryptjs')
 
-exports.register = (name, email, pass) => {
+exports.register = (username, pass) => {
     return new Promise( (resolve, reject) =>{
-        DB.query('SELECT email FROM users WHERE email=?', [email], (erro,res) =>{
+        DB.query('SELECT username FROM users WHERE username=?', [username], (erro,res) =>{
             if(erro){
                 console.error('Ocurrio un error al solicitar datos', erro.stack);
                 return reject({
@@ -12,7 +12,7 @@ exports.register = (name, email, pass) => {
                 })
             }else{
                 if(res[0]){
-                    if(res[0].email){
+                    if(res[0].username){
                         return reject ({
                             query: false,
                             msg:"El Correo ya se encuentra registrado!"
@@ -23,7 +23,7 @@ exports.register = (name, email, pass) => {
                         if(error){
                             console.error("Hubo un error en el Hash", error);
                         }else{
-                            DB.query('INSERT INTO users SET name=?, email=?, pass=?', [name,email,hash], (err,result) =>{
+                            DB.query('INSERT INTO users SET username=?, password=?', [username,hash], (err,result) =>{
                                 if(err){
                                     console.err('Error en el Registro', err.stack);
                                     return reject('Error en el Registro');

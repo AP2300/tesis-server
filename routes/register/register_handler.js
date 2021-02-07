@@ -1,18 +1,18 @@
 const register = require('./register');
 
 module.exports.validData = (req,res,next) =>{
-    const {name, email, pass} = req.body;
+    const {user, pass} = req.body;
 
-    if(!name){
+    /*if(!name){
         return res.send({
             success: false,
             msg: "El Nombre esta vacio"
         })
-    } 
-    if(!email){
+    } */
+    if(!user){
         return res.send({
             success: false,
-            msg: "El Correo esta vacio"
+            msg: "El usuario esta vacio"
         })
     } 
     if(!pass){
@@ -26,9 +26,9 @@ module.exports.validData = (req,res,next) =>{
 }
 
 module.exports.registerUser = (req,res) =>{
-    const {name, email, pass} = req.body;
-
-    register.register(name,email,pass)
+    const {user, pass} = req.body;
+console.log("sfsdfsdf");
+    register.register(user,pass)
     .then(data =>{
         if(data.query){
             console.log('Un Usuario fue Registrado con estos datos ')

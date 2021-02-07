@@ -3,12 +3,12 @@ const login     = require('./login');
 const bcrypt    = require('bcryptjs');
 
 module.exports.validData = (req,res,next) =>{
-    const {email, pass} = req.body;
+    const {user, pass} = req.body;
 
-    if(!email){
+    if(!user){
         return res.send({
             success: false,
-            msg: "El Correo esta vacio"
+            msg: "El usuario esta vacio"
         })
     } 
     if(!pass){
@@ -22,9 +22,9 @@ module.exports.validData = (req,res,next) =>{
 }
 
 module.exports.loginUser = (req,res) =>{
-    const {email, pass} = req.body;
+    const {user, pass} = req.body;
 
-    login.login(email)
+    login.login(user)
     .then(async (data) =>{
         if(data == undefined){
             res.send({
@@ -32,20 +32,25 @@ module.exports.loginUser = (req,res) =>{
                 msg: 'El Usuario no existe'
             }) 
         }else{
-            bcrypt.compare(String(pass), data.pass, (err, result) =>{
+            bcrypt.compare(String(pass), data.password, (err, result) =>{
                 if(err){
                     console.log(err);
                 } else if(result){
                     const payLoad = {
-                        id: data.IDUsers,
-                        email: data.email
+                        id: data.id,
+                        username: data.username
                     }
 
                     token.signToken(payLoad)
                     .then(token =>{
-                        res.send({
-                            success: true,
-                            token:token
+                        var d = new Date();
+                        d.setTime(d.getTime() + 60 * 1000);
+                        res.cookie('userToken', token, {
+                            expires: new Date(Date.now() + 10000),
+                            httpOnly: true
+                        });
+                        res.status(200).send({
+                            success: true
                         })
                     })
                     .catch(err =>{

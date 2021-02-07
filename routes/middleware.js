@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
-const _sign = GenerateKey(process.env.TIMES);
+const _sign = "o%pQH48$#zw$5J8kKk^Kk6szs9!Y6L^N&VhyR3oUD%dtbu8a!#4WAe93partp2tMXwQTV9p&sMHpaz";
 
 exports.authHeader = function(req, res, next) {
-  const token = req.headers['auth'];
+  const token = req.cookies;
+  console.log(token);
   
   if(!token) {
     console.log('No tienen el header autentificado');
@@ -13,8 +14,8 @@ exports.authHeader = function(req, res, next) {
   next();
 }
 
-exports.validSing = async function(req, res, next) {
-  const token = req.headers['auth'];
+exports.validSign = async function(req, res, next) {
+  const token = req.cookies.userToken;
 
   try {
     await jwt.verify(token, _sign);

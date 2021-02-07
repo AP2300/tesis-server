@@ -15,12 +15,18 @@ dotenv.config()
 app.set("port",process.env.PORT||3000);
 app.use(BodyParser.urlencoded({extended:true}));
 app.use(FP());
-app.use(cookieParser())
+app.use(cookieParser("o%pQH48$#zw$5J8kKk^Kk6szs9!Y6L^N&VhyR3oUD%dtbu8a!#4WAe93partp2tMXwQTV9p&sMHpaz", {
+    expires: null,
+    httpOnly: true,
+    maxAge: null,
+    sameSite: 'lax'
+}))
 app.use(require("express-session")({ 
     secret: 'o%pQH48$#zw$5J8kKk^Kk6szs9!Y6L^N&VhyR3oUD%dtbu8a!#4WAe93partp2tMXwQTV9p&sMHpaz',
     resave: true, 
     saveUninitialized:true,
-    maxAge: null,
+    //maxAge: null,
+    expires: new Date(Date.now() + 10000),
     cookie: { secure: false }
 })); // session secret
 app.use(express.static('src'));
@@ -46,16 +52,27 @@ let transporter = NodeMailer.createTransport({
 
 const register = require("./routes/register");
 const login = require("./routes/login");
+const middle = require("./routes/middleware");
 
 app.post('/login', login.validData, login.loginUser);
 app.post('/register', register.validData, register.registerUser);
-app.get('/user', user.GetUserData);
+//app.get('/user', user.GetUserData);
 
-app.post("/andresesdios", (req,res) => {
-    console.log(req.isAuthenticated());
+app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
+    console.log(req.cookies);
     console.log("usuario logueado");
     console.log(req.user);
-    res.send("holi");
+    res.send("Eres un dios");
+});
+
+app.post('/logout',(req,res) => {
+    req.session.destroy((err) => {
+        if(err) {
+            return console.log(err);
+        }
+        res.redirect('/andresesdios');
+    });
+
 });
 
 app.listen(app.get("port"), function(err){
