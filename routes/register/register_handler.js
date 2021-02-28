@@ -27,7 +27,7 @@ module.exports.validData = (req,res,next) =>{
 
 module.exports.registerUser = (req,res) =>{
     const {name,email,pass} = req.body;
-console.log("sfsdfsdf");
+    
     register.register(name,email,pass)
     .then(data =>{
         if(data.query){

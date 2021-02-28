@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const _sign = "o%pQH48$#zw$5J8kKk^Kk6szs9!Y6L^N&VhyR3oUD%dtbu8a!#4WAe93partp2tMXwQTV9p&sMHpaz";
+const _sign = process.env.TOKEN_SECRET;
 
 exports.authHeader = function(req, res, next) {
   const token = req.cookies;

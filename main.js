@@ -4,7 +4,7 @@ const   express               = require("express"),
         FP                    = require("express-fileupload"),
         bcrypt                = require("bcryptjs"),
         NodeMailer            = require("nodemailer"),
-        cookieParser          = require("cookie-parser");
+        cookieParser          = require("cookie-parser"),
         fs                    = require("fs"),
         { v4: uuidv4 }        = require('uuid'),
         MySqlStore            = require("express-mysql-session"),
@@ -12,10 +12,10 @@ const   express               = require("express"),
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 dotenv.config()
-app.set("port",process.env.PORT||3000);
+app.set("port",process.env.PORT);
 app.use(BodyParser.urlencoded({extended:true}));
 app.use(FP());
-app.use(cookieParser("o%pQH48$#zw$5J8kKk^Kk6szs9!Y6L^N&VhyR3oUD%dtbu8a!#4WAe93partp2tMXwQTV9p&sMHpaz", {
+app.use(cookieParser(process.env.COOKIE_SECRET, {
     expires: null,
     httpOnly: true,
     maxAge: null,
