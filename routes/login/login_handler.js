@@ -3,12 +3,12 @@ const login     = require('./login');
 const bcrypt    = require('bcryptjs');
 
 module.exports.validData = (req,res,next) =>{
-    const {user, pass} = req.body;
+    const {email, pass} = req.body;
 
-    if(!user){
+    if(!email){
         return res.send({
             success: false,
-            msg: "El usuario esta vacio"
+            msg: "El Correo esta vacio"
         })
     } 
     if(!pass){
@@ -22,23 +22,24 @@ module.exports.validData = (req,res,next) =>{
 }
 
 module.exports.loginUser = (req,res) =>{
-    const {user, pass} = req.body;
+    const {email, pass} = req.body;
 
-    login.login(user)
+    login.login(email)
     .then(async (data) =>{
         if(data == undefined){
             res.send({
                 success: false,
-                msg: 'El Usuario no existe'
+                msg: 'El Correo no existe'
             }) 
         }else{
-            bcrypt.compare(String(pass), data.password, (err, result) =>{
+            bcrypt.compare(String(pass), data.Password, (err, result) =>{
                 if(err){
                     console.log(err);
                 } else if(result){
                     const payLoad = {
-                        id: data.id,
-                        username: data.username
+                        id: data.IDUser,
+                        email: data.Email,
+                        FullName: data.FullName
                     }
 
                     token.signToken(payLoad)

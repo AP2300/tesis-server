@@ -1,8 +1,8 @@
 const DB = require('../../connections/Dbconection');
 
-exports.login = (username) => {
+exports.login = (email) => {
     return new Promise( (resolve, reject) =>{
-        DB.query('SELECT id, username, password FROM users WHERE username= ?', [username], (err,res) =>{
+        DB.query('SELECT IDUser, FullName ,Email, Password FROM users WHERE Email= ?', [email], (err,res) =>{
             if(err){
                 console.error('Ha ocurrido un error al solicitar data', err.stack);
                 return reject({
@@ -10,7 +10,6 @@ exports.login = (username) => {
                     msg: 'Ha ocurrido un error en el login'
                 })
             }
-            console.log(res)
             resolve(res[0])
         })
     })

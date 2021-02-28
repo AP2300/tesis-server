@@ -61,7 +61,7 @@ app.post('/register', register.validData, register.registerUser);
 app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
     console.log(req.cookies);
     console.log("usuario logueado");
-    console.log(req.user);
+    console.log(res);
     res.send("Eres un dios");
 });
 
