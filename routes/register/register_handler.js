@@ -12,7 +12,7 @@ module.exports.validData = (req,res,next) =>{
     if(!email){
         return res.send({
             success: false,
-            msg: "El usuario esta vacio"
+            msg: "El email esta vacio"
         })
     } 
     if(!pass){

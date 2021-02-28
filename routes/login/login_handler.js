@@ -49,7 +49,7 @@ module.exports.loginUser = (req,res) =>{
                         res.cookie('userToken', token, {
                             expires: new Date(Date.now() + 10000),
                             httpOnly: true
-                        });
+                        })
                         res.status(200).send({
                             success: true
                         })

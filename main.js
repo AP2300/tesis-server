@@ -8,7 +8,7 @@ const   express               = require("express"),
         fs                    = require("fs"),
         { v4: uuidv4 }        = require('uuid'),
         MySqlStore            = require("express-mysql-session"),
-        dotenv                = require('dotenv'),
+        dotenv                = require('dotenv');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 dotenv.config()
@@ -21,18 +21,11 @@ app.use(cookieParser("o%pQH48$#zw$5J8kKk^Kk6szs9!Y6L^N&VhyR3oUD%dtbu8a!#4WAe93pa
     maxAge: null,
     sameSite: 'lax'
 }))
-app.use(require("express-session")({ 
-    secret: 'o%pQH48$#zw$5J8kKk^Kk6szs9!Y6L^N&VhyR3oUD%dtbu8a!#4WAe93partp2tMXwQTV9p&sMHpaz',
-    resave: true, 
-    saveUninitialized:true,
-    //maxAge: null,
-    expires: new Date(Date.now() + 10000),
-    cookie: { secure: false }
-})); // session secret
+
+
 app.use(express.static('src'));
 app.use(BodyParser.json({'limit':'1mb'}));
 app.disable('x-powered-by');
-
 app.all('*', function(_, res, next){
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
@@ -61,7 +54,6 @@ app.post('/register', register.validData, register.registerUser);
 app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
     console.log(req.cookies);
     console.log("usuario logueado");
-    console.log(res);
     res.send("Eres un dios");
 });
 
