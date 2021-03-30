@@ -47,10 +47,12 @@ let transporter = NodeMailer.createTransport({
 const register = require("./routes/register");
 const login = require("./routes/login");
 const middle = require("./routes/middleware");
+const user = require("./routes/user")
 
 app.post('/login', login.validData, login.loginUser);
 app.post('/register', register.validData, register.registerUser);
-//app.get('/user', user.GetUserData);
+// app.get('/user', user.GetUserData);
+app.get("/Home", middle.authHeader, middle.validSign, user.GetUserData)
 
 app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
     console.log(req.cookies);

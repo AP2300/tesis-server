@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 const _sign = process.env.TOKEN_SECRET;
 
 exports.authHeader = function(req, res, next) {
-  const token = req.cookies;
-  console.log(token);
+  const token = req.signedCookies;
+  console.log(token, "puto");
   
   if(!token) {
     console.log('No tienen el header autentificado');
