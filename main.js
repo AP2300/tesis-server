@@ -12,7 +12,7 @@ const   express               = require("express"),
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 dotenv.config()
-app.set("port",process.env.PORT);
+app.set("port",3001);
 app.use(BodyParser.urlencoded({extended:true}));
 app.use(FP());
 app.use(cookieParser(process.env.COOKIE_SECRET, {
