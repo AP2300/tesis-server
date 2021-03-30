@@ -5,6 +5,6 @@ module.exports = mysql.createPool({
     host            : "remotemysql.com",
     port            : "3306",
     user            : 'c786Qnenb0',
-    password        : '8QCA1Lm6p9',
+    password        : '15u3xNdNjc',
     database        : 'c786Qnenb0'
   });
