@@ -13,7 +13,7 @@ exports.verifyToken = async function(token) {
 exports.signToken = function(data) {
   return new Promise( (resolve, reject) => {
     try {
-      const token = jwt.sign(data,_sign, {expiresIn:300});
+      const token = jwt.sign(data,_sign, {expiresIn:600});
       console.log(token)
       resolve(token)
     }
