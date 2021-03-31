@@ -27,11 +27,11 @@ exports.validSign = async function(req, res, next) {
   }
 }
 
-function GenerateKey(times) {
-  let randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!"#$%&/()=?¡]~';
-  let result = '';
-  for ( var i = 0; i < times; i++ ) {
-      result += randomChars.charAt(Math.floor(Math.random() * randomChars.times));
-  }
-  return result;
-}
+// function GenerateKey(times) {
+//   let randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!"#$%&/()=?¡]~';
+//   let result = '';
+//   for ( var i = 0; i < times; i++ ) {
+//       result += randomChars.charAt(Math.floor(Math.random() * randomChars.times));
+//   }
+//   return result;
+// }

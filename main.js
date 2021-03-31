@@ -1,6 +1,5 @@
 const   express               = require("express"),
         app                   = express(),
-        BodyParser            = require("body-parser"),
         FP                    = require("express-fileupload"),
         bcrypt                = require("bcryptjs"),
         NodeMailer            = require("nodemailer"),
@@ -13,7 +12,7 @@ const   express               = require("express"),
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 dotenv.config()
 app.set("port",3001);
-app.use(BodyParser.urlencoded({extended:true}));
+app.use(express.urlencoded({extended:true}));
 app.use(FP());
 app.use(cookieParser(process.env.COOKIE_SECRET, {
     expires: null,
@@ -24,7 +23,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET, {
 
 
 app.use(express.static('src'));
-app.use(BodyParser.json({'limit':'1mb'}));
+app.use(express.json({'limit':'1mb'}));
 app.disable('x-powered-by');
 app.all('*', function(_, res, next){
     res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
@@ -35,13 +34,7 @@ app.all('*', function(_, res, next){
 });
 
 
-let transporter = NodeMailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: "andresparedes202@gmail.com",
-        pass: "rrclmyolimtffmqo"
-    }
-});
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const register = require("./routes/register");
@@ -53,10 +46,7 @@ app.post('/login', login.validData, login.loginUser);
 app.post('/register', register.validData, register.registerUser);
 app.get("/Home", middle.authHeader, middle.validSign, user.GetUserData);
 app.get("/access_data", middle.authHeader, middle.validSign, user.GetUserAccess)
-app.get("/logOut", (req,res)=>{
-    res.clearCookie("userToken", { httpOnly: true},{signed: true}).send("sesion cerrada")
-    
-})
+app.get("/logOut", (req,res)=>{res.clearCookie("userToken", { httpOnly: true},{signed: true}).send("sesion cerrada")})
 
 app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
     console.log(req.cookies);
