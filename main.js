@@ -72,3 +72,14 @@ app.listen(app.get("port"), function(err){
     if(err) console.log(err);
     else console.log("servidor iniciado");  
 });
+
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+io.on('connection', () => { 
+    console.log('Nuevo cliente conectado')
+    io.emit('mensaje', 'Bienvenido!')
+});
+io.on('disconnect', () => { 
+    console.log('El cliente se ha desconectado')
+});
+server.listen(3004);
