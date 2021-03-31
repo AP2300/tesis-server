@@ -52,7 +52,8 @@ const user = require("./routes/user")
 app.post('/login', login.validData, login.loginUser);
 app.post('/register', register.validData, register.registerUser);
 // app.get('/user', user.GetUserData);
-app.get("/Home", middle.authHeader, middle.validSign, user.GetUserData)
+app.get("/Home", middle.authHeader, middle.validSign, user.GetUserData);
+app.get("/access_data", middle.authHeader, middle.validSign, user.GetUserAccess)
 
 app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
     console.log(req.cookies);
