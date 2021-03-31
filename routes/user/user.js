@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs')
 
 exports.GetData = (email) => {
     return new Promise( (resolve, reject) =>{
-        DB.query('SELECT Email FROM users WHERE Email= ?', [email], (err,res) =>{
+        DB.query('SELECT * FROM users WHERE Email= ?', [email], (err,res) =>{
             if(err){
                 console.error('Ha ocurrido un error al solicitar data', err.stack);
                 return reject({

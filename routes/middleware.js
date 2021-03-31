@@ -3,7 +3,6 @@ const _sign = process.env.TOKEN_SECRET;
 
 exports.authHeader = function(req, res, next) {
   const token = req.cookies;
-  console.log(token);
   
   if(!token) {
     console.log('No tienen el header autentificado');
