@@ -51,9 +51,12 @@ const user = require("./routes/user")
 
 app.post('/login', login.validData, login.loginUser);
 app.post('/register', register.validData, register.registerUser);
-// app.get('/user', user.GetUserData);
 app.get("/Home", middle.authHeader, middle.validSign, user.GetUserData);
 app.get("/access_data", middle.authHeader, middle.validSign, user.GetUserAccess)
+app.get("/logOut", (req,res)=>{
+    res.clearCookie("userToken", { httpOnly: true},{signed: true}).send("sesion cerrada")
+    
+})
 
 app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
     console.log(req.cookies);
@@ -61,15 +64,15 @@ app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
     res.send("Eres un dios");
 });
 
-app.post('/logout',(req,res) => {
-    req.session.destroy((err) => {
-        if(err) {
-            return console.log(err);
-        }
-        res.redirect('/andresesdios');
-    });
+// app.post('/logout',(req,res) => {
+//     req.session.destroy((err) => {
+//         if(err) {
+//             return console.log(err);
+//         }
+//         res.redirect('/andresesdios');
+//     });
 
-});
+// });
 
 app.listen(app.get("port"), function(err){
     if(err) console.log(err);
