@@ -49,8 +49,7 @@ module.exports.GetUserAccess = async (req,res) =>{
             })
         }
         else{
-
-            let groupedResults = _.groupBy(data, (data) => {moment(data.RegDate, 'DD/MM/YYYY').startOf('isoWeek')})
+            let groupedResults = _.groupBy(data, (data) => moment(data.RegDate, 'DD/MM/YYYY').startOf('isoWeek'))
             result = Object.entries(groupedResults)
             return res.send({
                 success:true,
