@@ -53,7 +53,7 @@ module.exports.GetUserAccess = async (req,res) =>{
             result = Object.entries(groupedResults)
             return res.send({
                 success:true,
-                data:result[0],
+                data:result[1],
                 id:decode.id,
                 log:true,
                 msg:"Usuario Autenticado"
