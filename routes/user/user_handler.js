@@ -68,3 +68,21 @@ module.exports.GetUserAccess = async (req,res) =>{
         })
     })
 }
+
+module.exports.GetUsersData = async (_, res) =>{
+    user.getUsersData()
+    .then(data=>{
+        if(data === undefined){
+            return res.send({
+                success: false,
+                msg: "error al recuperar los usuarios",
+            })
+        }else{
+            return res.send({
+                success: true,
+                msg: "datos recuperados",
+                data: data
+            })
+        }
+    })
+}

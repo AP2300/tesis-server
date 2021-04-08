@@ -47,6 +47,7 @@ app.post('/register', register.validData, register.registerUser);
 app.get("/Home", middle.authHeader, middle.validSign, user.GetUserData);
 app.get("/access_data", middle.authHeader, middle.validSign, user.GetUserAccess)
 app.get("/logOut", (_,res)=>{res.clearCookie("userToken", { httpOnly: true},{signed: true}).json({success: true})})
+app.get("/Search", middle.authHeader, middle.validSign, user.GetUsersData)
 
 app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
     console.log(req.cookies);
