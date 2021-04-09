@@ -48,7 +48,7 @@ app.post('/login', login.validData, login.loginUser);
 app.post('/register', register.validData, register.registerUser);
 app.get("/Home", middle.authHeader, middle.validSign, user.GetUserData);
 app.get("/access_data", middle.authHeader, middle.validSign, user.GetUserAccess)
-app.get("/logOut", (req,res)=>{res.clearCookie("userToken", { httpOnly: true},{signed: true}).send("sesion cerrada")})
+app.get("/logOut", (_,res)=>{res.clearCookie("userToken", { httpOnly: true},{signed: true}).json({success: true})})
 app.post('/setFace', middle.authHeader, middle.validSign, biometrics.setFace);
 
 app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
