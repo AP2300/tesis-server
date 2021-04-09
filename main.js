@@ -7,7 +7,8 @@ const   express               = require("express"),
         fs                    = require("fs"),
         { v4: uuidv4 }        = require('uuid'),
         MySqlStore            = require("express-mysql-session"),
-        dotenv                = require('dotenv');
+        dotenv                = require('dotenv'),
+        path                  = require('path');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 dotenv.config()
@@ -22,7 +23,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET, {
 }))
 
 
-app.use(express.static('src'));
+app.use(express.static(__dirname + '/resources/uploads'));
 app.use(express.json({'limit':'1mb'}));
 app.disable('x-powered-by');
 app.all('*', function(_, res, next){
@@ -40,13 +41,15 @@ app.all('*', function(_, res, next){
 const register = require("./routes/register");
 const login = require("./routes/login");
 const middle = require("./routes/middleware");
-const user = require("./routes/user")
+const user = require("./routes/user");
+const biometrics = require("./routes/biometrics");
 
 app.post('/login', login.validData, login.loginUser);
 app.post('/register', register.validData, register.registerUser);
 app.get("/Home", middle.authHeader, middle.validSign, user.GetUserData);
 app.get("/access_data", middle.authHeader, middle.validSign, user.GetUserAccess)
 app.get("/logOut", (req,res)=>{res.clearCookie("userToken", { httpOnly: true},{signed: true}).send("sesion cerrada")})
+app.post('/setFace', middle.authHeader, middle.validSign, biometrics.setFace);
 
 app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
     console.log(req.cookies);
