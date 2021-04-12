@@ -167,7 +167,7 @@ module.exports.UpdatePassword = async (req,res) =>{
                 data:data,
                 id:decode.id,
                 log:true,
-                msg:"Datos y Clave Actualizada con Exito!"
+                msg:"Clave Actualizada con Exito!"
             })
         }
     })
