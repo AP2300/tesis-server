@@ -90,7 +90,7 @@ module.exports.GetUsersData = async (_, res) =>{
 
 module.exports.GetUserHistoryData = async (req, res) =>{
     console.log(req.query, req.params);
-    user.getAccess4History()
+    user.getAccess4History(req.query.id)
     .then(data=>{
         if(data === undefined){
             return res.send({

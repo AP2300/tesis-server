@@ -47,9 +47,9 @@ exports.getUsersData = () => {
 }
 
 
-exports.getAccess4History = () => {
+exports.getAccess4History = (id) => {
     return new Promise((resolve, reject) => {
-        DB.query('SELECT * FROM records', (err, res) => {
+        DB.query('SELECT * FROM records WHERE IDUser = ?', [id] ,(err, res) => {
             if (err) {
                 console.error("error al solicitar los datos", err.stack)
                 return reject({
