@@ -45,6 +45,8 @@ const biometrics = require("./routes/biometrics");
 
 app.post('/login', login.validData, login.loginUser);
 app.post('/register', register.validData, register.registerUser);
+app.post('/updateUserData', middle.authHeader, middle.validSign, user.UpdateData);
+app.post('/updateUserPass', middle.authHeader, middle.validSign, user.UpdatePassword);
 app.get("/Home", middle.authHeader, middle.validSign, user.GetUserData);
 app.get("/access_data", middle.authHeader, middle.validSign, user.GetUserAccess)
 app.get("/logOut", (_,res)=>{res.clearCookie("userToken", { httpOnly: true},{signed: true}).json({success: true})})
@@ -56,6 +58,7 @@ app.get('/getFinger', middle.authHeader, middle.validSign, biometrics.validData,
 app.post('/setFace', middle.authHeader, middle.validSign, biometrics.validData, biometrics.setFace);
 app.get('/getFace', middle.authHeader, middle.validSign, biometrics.validData, biometrics.getFace);
 app.get("/Search", middle.authHeader, middle.validSign, biometrics.validData, user.GetUsersData)
+app.get("/UserHistory", middle.authHeader, middle.validSign, user.GetUserHistoryData)
 
 app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
     console.log(req.cookies);
@@ -63,15 +66,6 @@ app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
     res.send("Eres un dios");
 });
 
-// app.post('/logout',(req,res) => {
-//     req.session.destroy((err) => {
-//         if(err) {
-//             return console.log(err);
-//         }
-//         res.redirect('/andresesdios');
-//     });
-
-// });
 
 app.listen(app.get("port"), function(err){
     if(err) console.log(err);
