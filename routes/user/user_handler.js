@@ -39,6 +39,7 @@ module.exports.GetUserData = async (req,res) =>{
 module.exports.GetUserAccess = async (req,res) =>{
     const token = req.cookies;
     const decode = await Token.verifyToken(token.userToken);
+
     user.getAccess(decode.id)
     .then(data =>{
         if(data === undefined){
@@ -84,5 +85,80 @@ module.exports.GetUsersData = async (_, res) =>{
                 data: data
             })
         }
+    })
+}
+
+module.exports.UpdateData = async (req,res) =>{
+    const token = req.cookies;
+    const decode = await Token.verifyToken(token.userToken);
+    const Data = req.body.Data;
+    const ChangePass = req.body.changePass;
+
+    user.updateData(Data,decode.id)
+    .then(data =>{
+        if(data === undefined){
+            return res.send({
+                success:false,
+                log:false,
+                msg:"Hubo un error al Editar su Información"
+            })
+        }
+        else{
+            return res.send({
+                success:true,
+                data:data,
+                id:decode.id,
+                log:true,
+                msg:"Datos Actualizados con Exito!"
+            })
+        }
+    })
+    .catch(err =>{
+        console.error(err);
+        return res.send({
+            succes:false,
+            msg: "No fueron actualizados sus datos, hubo un error"
+        })
+    })
+}
+
+module.exports.UpdatePassword = async (req,res) =>{
+    const token = req.cookies;
+    const decode = await Token.verifyToken(token.userToken);
+    const Data = req.body.Data;
+
+    user.updatePassword(Data,decode.id)
+    .then(data =>{
+        if(data === undefined){
+            return res.send({
+                success:false,
+                log:false,
+                msg:"Hubo un error al Editar su Clave"
+            })
+        }
+        else if(data.OldPass === false){
+            return res.send({
+                success:false,
+                id:decode.id,
+                log:true,
+                msg:"La Clave Antigua no Coincide"
+            })
+        }
+        else{
+            return res.send({
+                success:true,
+                data:data,
+                id:decode.id,
+                log:true,
+                msg:"Datos y Clave Actualizada con Exito!"
+            })
+        }
+    })
+    .catch(err =>{
+        console.error(err);
+        return res.send({
+            success:false,
+            msg: "No fue actualizada su Clave, hubo un error"
+        })
     })
 }
