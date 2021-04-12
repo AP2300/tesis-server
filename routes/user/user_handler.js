@@ -86,3 +86,21 @@ module.exports.GetUsersData = async (_, res) =>{
         }
     })
 }
+
+module.exports.GetUserHistoryData = async (req, res) =>{
+    console.log(req.query, req.params);
+    user.getAccess4History()
+    .then(data=>{
+        if(data === undefined){
+            return res.send({
+                success:false,
+                msg:"Error el usuario no posee historial"
+            })
+        }else{
+            return res.send({
+                success:true,
+                data:data,
+            })
+        }
+    })
+}

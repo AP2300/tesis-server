@@ -51,6 +51,7 @@ app.get("/access_data", middle.authHeader, middle.validSign, user.GetUserAccess)
 app.get("/logOut", (_,res)=>{res.clearCookie("userToken", { httpOnly: true},{signed: true}).json({success: true})})
 app.post('/setFace', middle.authHeader, middle.validSign, biometrics.setFace);
 app.get("/Search", middle.authHeader, middle.validSign, user.GetUsersData)
+app.get("/UserHistory", middle.authHeader, middle.validSign, user.GetUserHistoryData)
 
 app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
     console.log(req.cookies);
@@ -58,15 +59,6 @@ app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
     res.send("Eres un dios");
 });
 
-// app.post('/logout',(req,res) => {
-//     req.session.destroy((err) => {
-//         if(err) {
-//             return console.log(err);
-//         }
-//         res.redirect('/andresesdios');
-//     });
-
-// });
 
 app.listen(app.get("port"), function(err){
     if(err) console.log(err);
