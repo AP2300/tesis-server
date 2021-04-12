@@ -25,7 +25,6 @@ exports.register = (name, email, pass) => {
                         }else{
                             DB.query('INSERT INTO users SET FullName=?, Email=?, Password=?', [name,email,hash], (err,result) =>{
                                 if(err){
-
                                     console.log('Error en el Registro', err.stack);
                                     return reject('Error en el Registro');
                                 }

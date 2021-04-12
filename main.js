@@ -46,6 +46,8 @@ const biometrics = require("./routes/biometrics");
 
 app.post('/login', login.validData, login.loginUser);
 app.post('/register', register.validData, register.registerUser);
+app.post('/updateUserData', middle.authHeader, middle.validSign, user.UpdateData);
+app.post('/updateUserPass', middle.authHeader, middle.validSign, user.UpdatePassword);
 app.get("/Home", middle.authHeader, middle.validSign, user.GetUserData);
 app.get("/access_data", middle.authHeader, middle.validSign, user.GetUserAccess)
 app.get("/logOut", (_,res)=>{res.clearCookie("userToken", { httpOnly: true},{signed: true}).json({success: true})})
