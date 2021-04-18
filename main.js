@@ -54,6 +54,7 @@ app.get("/logOut", (_,res)=>{res.clearCookie("userToken", { httpOnly: true},{sig
 app.post('/setFace', middle.authHeader, middle.validSign, biometrics.setFace);
 app.get("/Search", middle.authHeader, middle.validSign, user.GetUsersData)
 app.get("/UserHistory", middle.authHeader, middle.validSign, user.GetUserHistoryData)
+app.get("/profile", middle.authHeader, middle.validSign, user.GetProfileData)
 
 app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
     console.log(req.cookies);
