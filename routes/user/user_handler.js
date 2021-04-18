@@ -108,8 +108,7 @@ module.exports.GetUserHistoryData = async (req, res) => {
 module.exports.UpdateData = async (req, res) => {
     const token = req.cookies;
     const decode = await Token.verifyToken(token.userToken);
-    const Data = req.body.Data;
-    const ChangePass = req.body.changePass;
+    const Data = req.body;
 
     user.updateData(Data, decode.id)
         .then(data => {

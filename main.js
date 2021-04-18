@@ -60,6 +60,7 @@ app.get('/getFace', middle.authHeader, middle.validSign, biometrics.validData, b
 app.get("/Search", middle.authHeader, middle.validSign, biometrics.validData, user.GetUsersData)
 app.get("/UserHistory", middle.authHeader, middle.validSign, user.GetUserHistoryData)
 app.get("/profile", middle.authHeader, middle.validSign, user.GetProfileData)
+app.post("/editProfile", middle.authHeader, middle.validSign, user.UpdateData)
 
 app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
     console.log(req.cookies);

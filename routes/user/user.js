@@ -82,7 +82,7 @@ exports.getFullUserData = (id) => {
 }
 exports.updateData = (Data, id) => {
     return new Promise((resolve, reject) => {
-        DB.query('UPDATE users SET FullName = ?, Email = ?, IsActive = ? WHERE IDUser = ?', [Data.FullName, Data.Email, Data.IsActive, id], (err, res) => {
+        DB.query('UPDATE users SET FullName = ?, Email = ? WHERE IDUser = ?', [Data.name, Data.email, id], (err, res) => {
             if (err) {
                 console.error("Error al Actualizar los datos", err.stack)
                 return reject({
