@@ -1,5 +1,5 @@
 const DB = require('../../connections/Dbconection');
-
+const bcrypt = require('bcryptjs');
 
 exports.GetData = (email) => {
     return new Promise((resolve, reject) => {
@@ -68,15 +68,80 @@ exports.getFullUserData = (id) => {
         FROM users 
         INNER JOIN biometrics ON biometrics.IDUser = users.IDUser 
         INNER JOIN security ON security.IDSecurity = biometrics.IDSecurity 
-        WHERE users.IDUser = ? `,[id], (err, res)=>{
-            if(err){
-                console.error("error al recuperar los datos del usuario",err)
+        WHERE users.IDUser = ? `, [id], (err, res) => {
+            if (err) {
+                console.error("error al recuperar los datos del usuario", err)
                 reject({
                     query: false,
                     msg: "error al recuperar los datos del ususario"
                 })
             }
             resolve(res)
+        })
+    })
+}
+exports.updateData = (Data, id) => {
+    return new Promise((resolve, reject) => {
+        DB.query('UPDATE users SET FullName = ?, Email = ?, IsActive = ? WHERE IDUser = ?', [Data.FullName, Data.Email, Data.IsActive, id], (err, res) => {
+            if (err) {
+                console.error("Error al Actualizar los datos", err.stack)
+                return reject({
+                    query: false,
+                    msg: "Ha ocurrido un error al actualizar los datos"
+                })
+            }
+            resolve(res)
+        })
+    })
+}
+
+exports.updatePassword = (Data, id) => {
+    return new Promise((resolve, reject) => {
+        DB.query('SELECT Password FROM users WHERE IDUser = ?', [id], (erro, res) => {
+            if (erro) {
+                console.error('Ocurrio un error al solicitar datos', erro.stack);
+                return reject({
+                    query: false,
+                    msg: "Ha ocurrido un error al registrar el Usuario"
+                })
+            } else {
+                if (res[0]) {
+                    if (res[0].Password) {
+                        bcrypt.compare(Data.OldPass, res[0].Password).then((res) => {
+                            if (res === true) {
+                                bcrypt.hash(String(Data.Password), 8, (error, hash) => {
+                                    if (error) {
+                                        console.error("Hubo un error en el Hash", error);
+                                    } else {
+                                        DB.query('UPDATE users SET Password = ? WHERE IDUser = ?', [hash, id], (err, res) => {
+                                            if (err) {
+                                                console.error("Error al Actualizar los datos", err.stack)
+                                                return reject({
+                                                    query: false,
+                                                    msg: "Ha ocurrido un error al actualizar los datos"
+                                                })
+                                            }
+                                            resolve(res)
+                                        })
+                                    };
+                                });
+                            } else {
+                                resolve({ OldPass: false })
+                            }
+                        })
+                    } else {
+                        return reject({
+                            query: false,
+                            msg: "Este Usuario no Existe!"
+                        })
+                    }
+                } else {
+                    return reject({
+                        query: false,
+                        msg: "Este Usuario no Existe!"
+                    })
+                }
+            }
         })
     })
 }
