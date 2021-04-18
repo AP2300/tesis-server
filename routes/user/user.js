@@ -1,5 +1,5 @@
 const DB = require('../../connections/Dbconection');
-const bcrypt    = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 
 exports.GetData = (email) => {
     return new Promise((resolve, reject) => {
@@ -49,7 +49,7 @@ exports.getUsersData = () => {
 
 exports.getAccess4History = (id) => {
     return new Promise((resolve, reject) => {
-        DB.query('SELECT * FROM records WHERE IDUser = ?', [id] ,(err, res) => {
+        DB.query('SELECT * FROM records WHERE IDUser = ?', [id], (err, res) => {
             if (err) {
                 console.error("error al solicitar los datos", err.stack)
                 return reject({
@@ -62,9 +62,27 @@ exports.getAccess4History = (id) => {
     })
 }
 
-exports.updateData = (Data,id) => {
+exports.getFullUserData = (id) => {
     return new Promise((resolve, reject) => {
-        DB.query('UPDATE users SET FullName = ?, Email = ?, IsActive = ? WHERE IDUser = ?', [Data.FullName, Data.Email, Data.IsActive, id], (err, res) => {
+        DB.query(`SELECT security.Name, biometrics.IsActive 
+        FROM users 
+        INNER JOIN biometrics ON biometrics.IDUser = users.IDUser 
+        INNER JOIN security ON security.IDSecurity = biometrics.IDSecurity 
+        WHERE users.IDUser = ? `, [id], (err, res) => {
+            if (err) {
+                console.error("error al recuperar los datos del usuario", err)
+                reject({
+                    query: false,
+                    msg: "error al recuperar los datos del ususario"
+                })
+            }
+            resolve(res)
+        })
+    })
+}
+exports.updateData = (Data, id) => {
+    return new Promise((resolve, reject) => {
+        DB.query('UPDATE users SET FullName = ?, Email = ? WHERE IDUser = ?', [Data.name, Data.email, id], (err, res) => {
             if (err) {
                 console.error("Error al Actualizar los datos", err.stack)
                 return reject({
@@ -77,24 +95,24 @@ exports.updateData = (Data,id) => {
     })
 }
 
-exports.updatePassword = (Data,id) => {
+exports.updatePassword = (Data, id) => {
     return new Promise((resolve, reject) => {
-        DB.query('SELECT Password FROM users WHERE IDUser = ?', [id], (erro,res) =>{
-            if(erro){
+        DB.query('SELECT Password FROM users WHERE IDUser = ?', [id], (erro, res) => {
+            if (erro) {
                 console.error('Ocurrio un error al solicitar datos', erro.stack);
                 return reject({
                     query: false,
-                    msg:"Ha ocurrido un error al registrar el Usuario"
+                    msg: "Ha ocurrido un error al registrar el Usuario"
                 })
-            }else{
-                if(res[0]){
-                    if(res[0].Password){
+            } else {
+                if (res[0]) {
+                    if (res[0].Password) {
                         bcrypt.compare(Data.OldPass, res[0].Password).then((res) => {
-                            if(res === true){
-                                bcrypt.hash(String(Data.Password), 8, (error,hash) =>{
-                                    if(error){
+                            if (res === true) {
+                                bcrypt.hash(String(Data.Password), 8, (error, hash) => {
+                                    if (error) {
                                         console.error("Hubo un error en el Hash", error);
-                                    }else{
+                                    } else {
                                         DB.query('UPDATE users SET Password = ? WHERE IDUser = ?', [hash, id], (err, res) => {
                                             if (err) {
                                                 console.error("Error al Actualizar los datos", err.stack)
@@ -106,21 +124,21 @@ exports.updatePassword = (Data,id) => {
                                             resolve(res)
                                         })
                                     };
-                                }); 
-                            }else {
-                                resolve({OldPass: false})
+                                });
+                            } else {
+                                resolve({ OldPass: false })
                             }
-                        })                    
-                    } else {
-                        return reject ({
-                            query: false,
-                            msg:"Este Usuario no Existe!"
                         })
-                    } 
+                    } else {
+                        return reject({
+                            query: false,
+                            msg: "Este Usuario no Existe!"
+                        })
+                    }
                 } else {
-                    return reject ({
+                    return reject({
                         query: false,
-                        msg:"Este Usuario no Existe!"
+                        msg: "Este Usuario no Existe!"
                     })
                 }
             }
