@@ -7,8 +7,7 @@ const   express               = require("express"),
         fs                    = require("fs"),
         { v4: uuidv4 }        = require('uuid'),
         MySqlStore            = require("express-mysql-session"),
-        dotenv                = require('dotenv'),
-        path                  = require('path');
+        dotenv                = require('dotenv');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 dotenv.config()
@@ -51,8 +50,14 @@ app.post('/updateUserPass', middle.authHeader, middle.validSign, user.UpdatePass
 app.get("/Home", middle.authHeader, middle.validSign, user.GetUserData);
 app.get("/access_data", middle.authHeader, middle.validSign, user.GetUserAccess)
 app.get("/logOut", (_,res)=>{res.clearCookie("userToken", { httpOnly: true},{signed: true}).json({success: true})})
-app.post('/setFace', middle.authHeader, middle.validSign, biometrics.setFace);
-app.get("/Search", middle.authHeader, middle.validSign, user.GetUsersData)
+app.post('/setCode', middle.authHeader, middle.validSign, biometrics.validData, biometrics.setCode);
+app.get('/verifyCode', biometrics.verifyCode);
+app.get('/getCode', middle.authHeader, middle.validSign, biometrics.validData, biometrics.getCode);
+app.post('/setFinger', middle.authHeader, middle.validSign, biometrics.validData, biometrics.setFinger);
+app.get('/getFinger', middle.authHeader, middle.validSign, biometrics.validData, biometrics.getFinger);
+app.post('/setFace', middle.authHeader, middle.validSign, biometrics.validData, biometrics.setFace);
+app.get('/getFace', middle.authHeader, middle.validSign, biometrics.validData, biometrics.getFace);
+app.get("/Search", middle.authHeader, middle.validSign, biometrics.validData, user.GetUsersData)
 app.get("/UserHistory", middle.authHeader, middle.validSign, user.GetUserHistoryData)
 
 app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
