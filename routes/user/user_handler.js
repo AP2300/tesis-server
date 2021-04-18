@@ -48,13 +48,13 @@ module.exports.GetUserAccess = async (req,res) =>{
                 log:false,
                 msg:"Usted No esta Autenticado"
             })
-        }
+        }""
         else{
             let groupedResults = _.groupBy(data, (data) => moment(data.RegDate, 'DD/MM/YYYY').startOf('isoWeek'))
-            result = Object.entries(groupedResults)
+            let result = Object.entries(groupedResults)
             return res.send({
                 success:true,
-                data:result[1],
+                data:result[result.length-1],
                 id:decode.id,
                 log:true,
                 msg:"Usuario Autenticado"
@@ -89,7 +89,6 @@ module.exports.GetUsersData = async (_, res) =>{
 }
 
 module.exports.GetUserHistoryData = async (req, res) =>{
-    console.log(req.query, req.params);
     user.getAccess4History(req.query.id)
     .then(data=>{
         if(data === undefined){
@@ -105,6 +104,7 @@ module.exports.GetUserHistoryData = async (req, res) =>{
         }
     })
 }
+
 module.exports.UpdateData = async (req,res) =>{
     const token = req.cookies;
     const decode = await Token.verifyToken(token.userToken);
