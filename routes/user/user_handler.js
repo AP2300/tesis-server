@@ -89,7 +89,6 @@ module.exports.GetUsersData = async (_, res) => {
 }
 
 module.exports.GetUserHistoryData = async (req, res) => {
-    console.log(req.query, req.params);
     user.getAccess4History(req.query.id)
         .then(data => {
             if (data === undefined) {
@@ -141,7 +140,7 @@ module.exports.UpdateData = async (req, res) => {
 module.exports.UpdatePassword = async (req, res) => {
     const token = req.cookies;
     const decode = await Token.verifyToken(token.userToken);
-    const Data = req.body.Data;
+    const Data = req.body;
 
     user.updatePassword(Data, decode.id)
         .then(data => {
@@ -184,16 +183,34 @@ module.exports.GetProfileData = async (req, res) => {
     const decode = await Token.verifyToken(token.userToken);
     user.getFullUserData(decode.id)
         .then(data => {
-            if(data===undefined){
+            if (data === undefined) {
                 return res.send({
                     success: false,
                     msg: "error en la peticion"
                 })
-            }else{
+            } else {
                 return res.send({
                     success: true,
                     data: data
                 })
             }
         })
+}
+
+module.exports.UpdateAuthMethods = async (req, res) => {
+    const { id, active } = req.body
+    user.UpdateAuth(id, active)
+    .then(data=>{
+        if(data===undefined){
+            return res.send({
+                success: false,
+                msg: "error al actualizar los datos biometricos"
+            })
+        }else{
+            return res.send({
+                success: true,
+                msg: "datos biometricos actualizados satisfactoriamente"
+            })
+        }
+    })
 }

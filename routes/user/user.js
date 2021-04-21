@@ -1,5 +1,6 @@
 const DB = require('../../connections/Dbconection');
 const bcrypt = require('bcryptjs');
+const { reject } = require('lodash');
 
 exports.GetData = (email) => {
     return new Promise((resolve, reject) => {
@@ -64,7 +65,7 @@ exports.getAccess4History = (id) => {
 
 exports.getFullUserData = (id) => {
     return new Promise((resolve, reject) => {
-        DB.query(`SELECT security.Name, biometrics.IsActive 
+        DB.query(`SELECT security.Name, biometrics.IsActive, biometrics.IDBiometrics
         FROM users 
         INNER JOIN biometrics ON biometrics.IDUser = users.IDUser 
         INNER JOIN security ON security.IDSecurity = biometrics.IDSecurity 
@@ -142,6 +143,20 @@ exports.updatePassword = (Data, id) => {
                     })
                 }
             }
+        })
+    })
+}
+
+exports.UpdateAuth = (id,active) =>{
+    return new Promise((resolve, reject)=>{
+        DB.query('UPDATE biometrics SET IsActive = ? WHERE IDBiometrics = ?',[active, id], (err, res)=>{
+            if(err){
+                console.error("error al actualizar los datos biometricos", err.stack)
+                return reject({
+                    query: false,
+                    msg: "ocurrio un error al actualizar los datos"
+                })
+            }else resolve(res)
         })
     })
 }
