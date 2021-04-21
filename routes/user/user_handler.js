@@ -89,7 +89,6 @@ module.exports.GetUsersData = async (_, res) => {
 }
 
 module.exports.GetUserHistoryData = async (req, res) => {
-    console.log(req.query, req.params);
     user.getAccess4History(req.query.id)
         .then(data => {
             if (data === undefined) {
@@ -105,6 +104,7 @@ module.exports.GetUserHistoryData = async (req, res) => {
             }
         })
 }
+
 module.exports.UpdateData = async (req, res) => {
     const token = req.cookies;
     const decode = await Token.verifyToken(token.userToken);

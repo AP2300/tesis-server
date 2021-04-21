@@ -77,7 +77,7 @@ exports.getFullUserData = (id) => {
                 })
             }
             resolve(res)
-        })
+        })  
     })
 }
 exports.updateData = (Data, id) => {
