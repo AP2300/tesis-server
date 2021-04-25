@@ -184,6 +184,7 @@ module.exports.GetProfileData = async (req, res) => {
     const decode = await Token.verifyToken(token.userToken);
     user.getFullUserData(decode.id)
         .then(data => {
+            console.log(data)
             if (data === undefined) {
                 return res.send({
                     success: false,
