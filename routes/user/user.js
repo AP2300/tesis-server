@@ -65,7 +65,8 @@ exports.getAccess4History = (id) => {
 
 exports.getFullUserData = (id) => {
     return new Promise((resolve, reject) => {
-        DB.query(`SELECT security.Name, biometrics.IsActive, biometrics.IDBiometrics, biometrics.IDSecurity
+        DB.query(`SELECT security.Name, biometrics.fingerName, biometrics.data,
+        biometrics.IsActive, biometrics.IDBiometrics, biometrics.IDSecurity
         FROM users 
         INNER JOIN biometrics ON biometrics.IDUser = users.IDUser 
         INNER JOIN security ON security.IDSecurity = biometrics.IDSecurity 
