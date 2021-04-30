@@ -26,7 +26,7 @@ app.use(express.static(__dirname + '/resources/uploads'));
 app.use(express.json({'limit':'1mb'}));
 app.disable('x-powered-by');
 app.all('*', function(_, res, next){
-    res.header('Access-Control-Allow-Origin', ' http://192.168.1.120:3000');
+    res.header('Access-Control-Allow-Origin', ' http://localhost:3000');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,HEAD');
     res.header('Access-Control-Allow-Headers', 'Content-Type, auth, Content-Length, X-Requested-With');
     res.header('Access-Control-Allow-Credentials', 'true');
