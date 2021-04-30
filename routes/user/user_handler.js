@@ -182,7 +182,31 @@ module.exports.UpdatePassword = async (req, res) => {
 module.exports.GetProfileData = async (req, res) => {
     const token = req.cookies;
     const decode = await Token.verifyToken(token.userToken);
-    user.getFullUserData(decode.id)
+    let id = "";
+    if(req.query.id) {
+        id = req.query.id;
+    } else {
+        id = decode.id;
+    }
+    user.getFullUserData(id)
+        .then(data => {
+            if (data === undefined) {
+                return res.send({
+                    success: false,
+                    msg: "error en la peticion"
+                })
+            } else {
+                return res.send({
+                    success: true,
+                    data: data
+                })
+            }
+        })
+}
+
+module.exports.GetSecurityData = async (req, res) => {
+    
+    user.getSecurityData(req.id)
         .then(data => {
             if (data === undefined) {
                 return res.send({
