@@ -34,7 +34,7 @@ exports.getAccess = (id) => {
 
 exports.getUsersData = () => {
     return new Promise((resolve, reject) => {
-        DB.query("SELECT FullName, Email, IDUser FROM users", (err, res) => {
+        DB.query("SELECT FullName, Email, IDUser, IsAdmin, IsActive FROM users", (err, res) => {
             if (err) {
                 console.error("error al obtener los datos", err.stack)
                 return reject({
