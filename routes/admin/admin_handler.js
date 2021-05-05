@@ -7,7 +7,7 @@ module.exports.UpdateDataAdmin = (req, res) => {
     const data = req.body
     admin.UpdateData(data)
         .then(data => {
-            if (data===undefined) {
+            if (data === undefined) {
                 return res.send({
                     success: false,
                     log: false,
@@ -38,6 +38,25 @@ module.exports.UpdatePassAdmin = (req, res) => {
                     success: true,
                     log: true,
                     msg: "Contraseña Actualizados con Exito!"
+                })
+            }
+        })
+}
+
+module.exports.UserStateUpdate = (req, res) => {
+    const data = req.body
+    console.log(data);
+    admin.ChangeState(data)
+        .then(data => {
+            if(data === undefined){
+                return res.send({
+                    success: false,
+                    msg: "hubo un error actualizando el estado"
+                })
+            }else{
+                return res.send({
+                    success: true,
+                    msg: "estado actualizado correctamente"
                 })
             }
         })

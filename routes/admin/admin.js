@@ -36,3 +36,18 @@ exports.UpdatePass = (data) => {
 
     })
 }
+
+exports.ChangeState = data =>{
+    return new Promise((resolve, reject)=>{
+        DB.query("UPDATE users SET IsActive = ? WHERE IDUser = ?", [data.state, data.id], (err, res)=>{
+            if(err){
+                console.error("Error al cambiar el estado del usuario");
+                return reject({
+                    query: false,
+                    msg: "no se pudo actualizar el estado del usuario"
+                })
+            }
+            resolve(res)
+        })
+    })
+}
