@@ -1,6 +1,5 @@
 const DB = require('../../connections/Dbconection');
 const bcrypt = require('bcryptjs');
-const { reject } = require('lodash');
 
 exports.GetData = (email) => {
     return new Promise((resolve, reject) => {
