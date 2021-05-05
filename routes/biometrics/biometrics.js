@@ -259,6 +259,26 @@ exports.getFinger = (id) => {
     })
 };
 
+exports.deleteMethod = (id) => {
+    return new Promise( (resolve, reject) =>{
+        DB.query('DELETE FROM biometrics WHERE IDBiometrics = ?', id, (err,res) =>{
+            console.log(res);
+            if(err){
+                console.error('Ha ocurrido un error al eliminar el metodo', err.stack);
+                return reject({
+                    query: false,
+                    msg: 'Ha ocurrido un error al eliminar el metodo'
+                })
+            } else {
+                return resolve({
+                    query: true,
+                    msg: "Exito"
+                })
+            }
+        })
+    })
+};
+
 exports.setFace = (face, id) => {
     console.log("Empezo")
     return new Promise( (resolve, reject) =>{
