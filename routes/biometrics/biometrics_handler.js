@@ -4,7 +4,7 @@ const   Token             = require('../../models/token'),
         fs                = require('fs');
 
 module.exports.validData = (req,res,next) =>{
-    const {code, pass, finger, face} = req.body;
+    const {code, pass, finger, face, id} = req.body;
     switch(req.route.path) {
         case "/setCode":
             if(!code) {
@@ -37,6 +37,14 @@ module.exports.validData = (req,res,next) =>{
                 res.send({
                     success: false,
                     msg: "face no esta en el body"
+                })
+            }
+        case "/deleteMethod":
+            console.log("ASDFASDF")
+            if(!id) {
+                res.send({
+                    success: false,
+                    msg: "id no esta en el body"
                 })
             }
     }
@@ -182,6 +190,24 @@ module.exports.getFinger = async (req,res) =>{
         res.send({
             success: false,
             msg: data.msg
+        });
+    });
+}
+
+module.exports.deleteMethod = async (req,res) =>{
+    const { id } = req.body;
+
+    biometrics.deleteMethod(id)
+    .then( data => {
+        res.send({
+            success: true,
+            msg: data.msg
+        });
+    })
+    .catch( err => {
+        res.send({
+            success: false,
+            msg: err.msg
         });
     });
 }

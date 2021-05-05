@@ -61,6 +61,7 @@ app.get("/UserHistory", middle.authHeader, middle.validSign, user.GetUserHistory
 app.get("/profile", middle.authHeader, middle.validSign, user.GetProfileData)
 app.post("/editProfile", middle.authHeader, middle.validSign, user.UpdateData)
 app.post("/bioUpdate", middle.authHeader, middle.validSign, user.UpdateAuthMethods)
+app.delete("/deleteMethod", middle.authHeader, middle.validSign, biometrics.validData, biometrics.deleteMethod)
 
 app.post("/andresesdios", middle.authHeader, middle.validSign, (req,res) => {
     console.log(req.cookies);
