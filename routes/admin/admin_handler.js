@@ -45,18 +45,35 @@ module.exports.UpdatePassAdmin = (req, res) => {
 
 module.exports.UserStateUpdate = (req, res) => {
     const data = req.body
-    console.log(data);
     admin.ChangeState(data)
         .then(data => {
-            if(data === undefined){
+            if (data === undefined) {
                 return res.send({
                     success: false,
                     msg: "hubo un error actualizando el estado"
                 })
-            }else{
+            } else {
                 return res.send({
                     success: true,
                     msg: "estado actualizado correctamente"
+                })
+            }
+        })
+}
+
+module.exports.DeleteUser = (req, res) => {
+    const {id} = req.body
+    admin.deleteUser(id)
+        .then(data => {
+            if (data === undefined) {
+                return res.send({
+                    success: false,
+                    msg: "hubo un error eliminando el usuario"
+                })
+            } else {
+                return res.send({
+                    success: true,
+                    msg: "usuario eliminado correctamente"
                 })
             }
         })

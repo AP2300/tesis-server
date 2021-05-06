@@ -51,3 +51,25 @@ exports.ChangeState = data =>{
         })
     })
 }
+
+exports.deleteUser = id =>{
+    return new Promise((resolve, reject)=>{
+        DB.query(`DELETE users,
+        records,
+        biometrics
+        FROM
+          users
+          LEFT JOIN records ON records.IDUser = users.IDUser
+          LEFT JOIN biometrics ON biometrics.IDUser = users.IDUser
+        WHERE
+          users.IDUser = ?`, [id], (req, res)=>{
+              if(res === undefined){
+                  return reject({
+                      query: false,
+                      msg: "error al eliminar al usuario"
+                  })
+              }
+              resolve(res)
+          })
+    })
+}
