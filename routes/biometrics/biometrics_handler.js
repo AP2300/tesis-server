@@ -158,7 +158,7 @@ module.exports.setFinger = async (req,res) =>{
                 console.log("aqui fue");
                 console.log(err);
                 console.log(`${imgSource}`);
-                fs.unlink(`./resources/fingers${imgSource}`, (err => {
+                fs.unlink(`./resources${imgSource}`, (err => {
                     if (err) console.log(err);
                     else {
                         console.log("se borro");

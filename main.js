@@ -68,6 +68,7 @@ app.post("/changeState", middle.authHeader, middle.validSign, admin.UserStateUpd
 app.post("/deleteUser", middle.authHeader, middle.validSign, admin.DeleteUser)
 app.delete("/deleteMethod", middle.authHeader, middle.validSign, biometrics.validData, biometrics.deleteMethod)
 app.post("/updateProfile", middle.authHeader, middle.validSign, user.UpdateProfilePicture)
+app.post("/deleteProfile", middle.authHeader, middle.validSign, user.DeletePicture)
 
 app.post("/andresesdios", middle.authHeader, middle.validSign, (req, res) => {
     console.log(req.cookies);
