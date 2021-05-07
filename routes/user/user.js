@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 
 exports.GetData = (email) => {
     return new Promise((resolve, reject) => {
-        DB.query('SELECT IDUser, FullName, Email, IsActive, IsAdmin FROM users WHERE Email= ?', [email], (err, res) => {
+        DB.query('SELECT IDUser, FullName, Email, IsActive, IsAdmin, Picture FROM users WHERE Email= ?', [email], (err, res) => {
             if (err) {
                 console.error('Ha ocurrido un error al solicitar data', err.stack);
                 return reject({
@@ -33,7 +33,7 @@ exports.getAccess = (id) => {
 
 exports.getUsersData = () => {
     return new Promise((resolve, reject) => {
-        DB.query("SELECT FullName, Email, IDUser, IsAdmin, IsActive FROM users", (err, res) => {
+        DB.query("SELECT FullName, Email, IDUser, IsAdmin, IsActive, Picture FROM users", (err, res) => {
             if (err) {
                 console.error("error al obtener los datos", err.stack)
                 return reject({
@@ -156,7 +156,23 @@ exports.UpdateAuth = (id,active) =>{
                     query: false,
                     msg: "ocurrio un error al actualizar los datos"
                 })
-            }else resolve(res)
+            }
+            return resolve(res)
+        })
+    })
+}
+
+exports.UpdatePicture = (id, imgSource) =>{
+    return new Promise((resolve, reject)=>{
+        DB.query("UPDATE users SET Picture = ? WHERE IDUser = ?", [imgSource, id], (err, res)=>{
+            if(err){
+                console.error("error al actualizar la foto de perfil", err.stack);
+                return reject({
+                    query: false,
+                    msg: "ocurrio un error al actualilzar la foto de perfil"
+                })
+            }
+            return resolve(res)
         })
     })
 }

@@ -1,5 +1,6 @@
 const Token = require("../../models/token")
 const user = require('./user');
+const { v4: uuidv4 } = require('uuid')
 var _ = require('lodash');
 var moment = require('moment'); // require
 moment().format();
@@ -183,7 +184,7 @@ module.exports.GetProfileData = async (req, res) => {
     const token = req.cookies;
     const decode = await Token.verifyToken(token.userToken);
     let id = "";
-    if(req.query.id) {
+    if (req.query.id) {
         id = req.query.id;
     } else {
         id = decode.id;
@@ -205,7 +206,7 @@ module.exports.GetProfileData = async (req, res) => {
 }
 
 module.exports.GetSecurityData = async (req, res) => {
-    
+
     user.getSecurityData(req.id)
         .then(data => {
             if (data === undefined) {
@@ -225,17 +226,45 @@ module.exports.GetSecurityData = async (req, res) => {
 module.exports.UpdateAuthMethods = async (req, res) => {
     const { id, active } = req.body
     user.UpdateAuth(id, active)
-    .then(data=>{
-        if(data===undefined){
-            return res.send({
-                success: false,
-                msg: "error al actualizar los datos biometricos"
-            })
-        }else{
-            return res.send({
-                success: true,
-                msg: "datos biometricos actualizados satisfactoriamente"
-            })
+        .then(data => {
+            if (data === undefined) {
+                return res.send({
+                    success: false,
+                    msg: "error al actualizar los datos biometricos"
+                })
+            } else {
+                return res.send({
+                    success: true,
+                    msg: "datos biometricos actualizados satisfactoriamente"
+                })
+            }
+        })
+}
+
+module.exports.UpdateProfilePicture = async (req, res) => {
+    const {id} = req.body
+    const { picture } = req.files
+    let uniqueName = uuidv4();
+
+    let imgSource = `/ProfilePictures/${uniqueName}${picture.name.slice(picture.name.indexOf("."))}`
+    picture.mv(`./resources/uploads/ProfilePictures/${uniqueName}${picture.name.slice(picture.name.indexOf("."))}`, err => {
+        if (err) {
+            console.error(err)
+        } else {
+            user.UpdatePicture(id, imgSource)
+                .then(data => {
+                    if (data === undefined) {
+                        return res.send({
+                            success: false,
+                            msg: "error al actualizar la imagen"
+                        })
+                    } else {
+                        return res.send({
+                            success: true,
+                            msg: "imagen actualizada correctamente"
+                        })
+                    }
+                })
         }
     })
 }
