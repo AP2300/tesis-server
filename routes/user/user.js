@@ -176,3 +176,19 @@ exports.UpdatePicture = (id, imgSource) =>{
         })
     })
 }
+
+
+exports.RemovePicture = (data) =>{
+    return new Promise((resolve, reject)=>{
+        DB.query("UPDATE users SET Picture = ? WHERE IDUser = ?", ["null",data.id], (err, res)=>{
+            if(err){
+                console.error("error al actualizar la foto de perfil", err.stack);
+                return reject({
+                    query: false,
+                    msg: "ocurrio un error al actualilzar la foto de perfil"
+                })
+            }
+            return resolve(res)
+        })
+    })
+}

@@ -2,7 +2,9 @@ const Token = require("../../models/token")
 const user = require('./user');
 const { v4: uuidv4 } = require('uuid')
 var _ = require('lodash');
+const fs = require("fs")
 var moment = require('moment'); // require
+const { isNull } = require("lodash");
 moment().format();
 
 module.exports.GetUserData = async (req, res) => {
@@ -242,29 +244,92 @@ module.exports.UpdateAuthMethods = async (req, res) => {
 }
 
 module.exports.UpdateProfilePicture = async (req, res) => {
-    const {id} = req.body
+    const { id, actualPicture } = req.body
     const { picture } = req.files
     let uniqueName = uuidv4();
-
     let imgSource = `/ProfilePictures/${uniqueName}${picture.name.slice(picture.name.indexOf("."))}`
-    picture.mv(`./resources/uploads/ProfilePictures/${uniqueName}${picture.name.slice(picture.name.indexOf("."))}`, err => {
-        if (err) {
-            console.error(err)
-        } else {
-            user.UpdatePicture(id, imgSource)
+
+    if (actualPicture !== "null") {
+        fs.unlink(`./resources/uploads/${actualPicture}`, err => {
+            if (err) {
+                console.error("ocurrio un error", err.stack)
+            } else {
+                user.RemovePicture(id)
+                    .then(data => {
+                        if (data === undefined) {
+                            return res.send({
+                                success: false,
+                                msg: "error al actualizar la imagen"
+                            })
+                        } else {
+                            picture.mv(`./resources/uploads/ProfilePictures/${uniqueName}${picture.name.slice(picture.name.indexOf("."))}`, err => {
+                                if (err) {
+                                    console.error(err)
+                                } else {
+                                    user.UpdatePicture(id, imgSource)
+                                        .then(data => {
+                                            if (data === undefined) {
+                                                return res.send({
+                                                    success: false,
+                                                    msg: "error al actualizar la imagen"
+                                                })
+                                            } else {
+                                                return res.send({
+                                                    success: true,
+                                                    msg: "imagen actualizada correctamente"
+                                                })
+                                            }
+                                        })
+                                }
+                            })
+                        }
+                    })
+            }
+        })
+    } else {
+        picture.mv(`./resources/uploads/ProfilePictures/${uniqueName}${picture.name.slice(picture.name.indexOf("."))}`, err => {
+            if (err) {
+                console.error(err)
+            } else {
+                user.UpdatePicture(id, imgSource)
+                    .then(data => {
+                        if (data === undefined) {
+                            return res.send({
+                                success: false,
+                                msg: "error al actualizar la imagen"
+                            })
+                        } else {
+                            return res.send({
+                                success: true,
+                                msg: "imagen actualizada correctamente"
+                            })
+                        }
+                    })
+            }
+        })
+    }
+}
+
+module.exports.DeletePicture = (req, res) => {
+    const data = req.body
+
+        fs.unlink(`./resources/uploads/${data.actualPicture}`, err =>{
+            if(err) console.error("ocurrio un error", err.stack)
+            else{
+                user.RemovePicture(data)
                 .then(data => {
                     if (data === undefined) {
                         return res.send({
                             success: false,
-                            msg: "error al actualizar la imagen"
+                            msg: "error al eliminar la foto"
                         })
                     } else {
                         return res.send({
                             success: true,
-                            msg: "imagen actualizada correctamente"
+                            msg: "foto eliminada correctamente"
                         })
                     }
                 })
-        }
-    })
+            }
+        })
 }
