@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 
 exports.UpdateData = (data) => {
     return new Promise((resolve, reject) => {
-        DB.query("UPDATE users SET FullName = ?, Email = ?  WHERE IDUser = ?", [ data.name, data.email, Number(data.id)], (err, res) => {
+        DB.query("UPDATE users SET FullName = ?, Email = ?  WHERE IDUser = ?", [data.name, data.email, Number(data.id)], (err, res) => {
             if (err) {
                 console.error("Ocurrio un errror al actualizar datos por administrador", err.stack)
                 return reject({
@@ -37,10 +37,10 @@ exports.UpdatePass = (data) => {
     })
 }
 
-exports.ChangeState = data =>{
-    return new Promise((resolve, reject)=>{
-        DB.query("UPDATE users SET IsActive = ? WHERE IDUser = ?", [data.state, data.id], (err, res)=>{
-            if(err){
+exports.ChangeState = data => {
+    return new Promise((resolve, reject) => {
+        DB.query("UPDATE users SET IsActive = ? WHERE IDUser = ?", [data.state, data.id], (err, res) => {
+            if (err) {
                 console.error("Error al cambiar el estado del usuario");
                 return reject({
                     query: false,
@@ -52,24 +52,20 @@ exports.ChangeState = data =>{
     })
 }
 
-exports.deleteUser = id =>{
-    return new Promise((resolve, reject)=>{
-        DB.query(`DELETE users,
-        records,
-        biometrics
+exports.deleteUser = id => {
+    return new Promise((resolve, reject) => {
+        DB.query(`DELETE users
         FROM
           users
-          LEFT JOIN records ON records.IDUser = users.IDUser
-          LEFT JOIN biometrics ON biometrics.IDUser = users.IDUser
         WHERE
-          users.IDUser = ?`, [id], (req, res)=>{
-              if(res === undefined){
-                  return reject({
-                      query: false,
-                      msg: "error al eliminar al usuario"
-                  })
-              }
-              resolve(res)
-          })
+          users.IDUser = ?`, [id], (err, res) => {
+            if (err === undefined) {
+                return reject({
+                    query: false,
+                    msg: "error al eliminar al usuario"
+                })
+            }
+            resolve(res)
+        })
     })
 }

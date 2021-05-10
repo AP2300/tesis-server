@@ -21,6 +21,13 @@ module.exports.UpdateDataAdmin = (req, res) => {
                 })
             }
         })
+        .catch(err =>{
+            console.error("Error al eliminar el usuario",err);
+            res.send({
+                success: false,
+                msg: "error al eliminar el usuario"
+            })
+        })
 }
 
 module.exports.UpdatePassAdmin = (req, res) => {

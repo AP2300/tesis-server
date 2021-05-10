@@ -1,5 +1,8 @@
 const DB = require('../../connections/Dbconection');
+const { customAlphabet } = require('nanoid')
+const nanoid = customAlphabet('1234567890', 6)
 const bcrypt = require('bcryptjs')
+
 
 exports.register = (data) => {
     return new Promise((resolve, reject) => {
@@ -24,16 +27,26 @@ exports.register = (data) => {
                             console.error("Hubo un error en el Hash", error);
                         } else {
                             DB.query('INSERT INTO users SET FullName=?, Email=?, Password=?, IsAdmin = ?',
-                                [data.name, data.email, hash, data.type], (err, result) => {
+                                [data.name, data.email, hash, data.type], async (err, result) => {
                                     if (err) {
                                         console.log('Error en el Registro', err.stack);
                                         return reject('Error en el Registro');
+                                    } else {
+                                        const code = await nanoid()
+                                        DB.query('INSERT INTO biometrics SET ?',
+                                            {IDSecurity: 1, IDUser: result.insertId, data: code, IsActive: 1}, (err, res) => {
+                                                if (err) {
+                                                    console.log('Error en el Registro', err.stack);
+                                                    return reject('Error en el Registro');
+                                                }
+                                                resolve({
+                                                    query: true,
+                                                    msg: 'El Usuario ha sido Registrado Satisfactoriamente',
+                                                    Inserted: result.insertId
+                                                });
+                                            })
                                     }
-                                    resolve({
-                                        query: true,
-                                        msg: 'El Usuario ha sido Registrado Satisfactoriamente',
-                                        Inserted: result.insertId
-                                    });
+
                                 });
                         };
                     });
