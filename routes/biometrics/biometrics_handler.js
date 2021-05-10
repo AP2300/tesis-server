@@ -4,49 +4,85 @@ const   Token             = require('../../models/token'),
         fs                = require('fs');
 
 module.exports.validData = (req,res,next) =>{
-    const {code, pass, finger, face, id} = req.body;
+    const {code, pass, id} = req.body;
+
     switch(req.route.path) {
         case "/setCode":
             if(!code) {
-                res.send({
+                return res.send({
                     success: false,
                     msg: "code no esta en el body"
                 })
             }
+            break
         case "/verifyCode":
             if(!code) {
-                res.send({
+                return res.send({
                     success: false,
                     msg: "code no esta en el body"
                 })
             } else if(!pass) {
-                res.send({
+                return res.send({
                     success: false,
                     msg: "pass no esta en el body"
                 })
             }
-        case "/setFingerprint":
-            if(!finger) {
-                res.send({
+            break
+        case "/setFinger":
+            if(req.files == undefined) {
+                return res.send({
                     success: false,
                     msg: "finger no esta en el body"
                 })
+            } else {
+                const { finger } = req.files;
+                if(!finger) {
+                    return res.send({
+                        success: false,
+                        msg: "finger no esta en el body"
+                    })
+                }
             }
-        case "/setFace":
-            if(!face) {
-                res.send({
-                    success: false,
-                    msg: "face no esta en el body"
-                })
-            }
-        case "/deleteMethod":
-            console.log("ASDFASDF")
             if(!id) {
-                res.send({
+                return res.send({
                     success: false,
                     msg: "id no esta en el body"
                 })
             }
+            break
+        case "/setFace":
+            console.log("Sdfsdfsdf")
+            if(!req.files) {
+                console.log("Sdfsdfsdf")
+                return res.send({
+                    success: false,
+                    msg: "face no esta en el body"
+                })
+            } else {
+                const { face } = req.files;
+                if(!face) {
+                    return res.send({
+                        success: false,
+                        msg: "face no esta en el body"
+                    })
+                }
+            }
+            if(!id) {
+                return res.send({
+                    success: false,
+                    msg: "id no esta en el body"
+                })
+            }
+            break
+        case "/deleteMethod":
+            console.log("ASDFASDF")
+            if(!id) {
+                return res.send({
+                    success: false,
+                    msg: "id no esta en el body"
+                })
+            }
+            break
     }
     next();
 }
@@ -137,9 +173,8 @@ module.exports.getCode = async (req,res) =>{
 }
 
 module.exports.setFinger = async (req,res) =>{
-    const token = req.cookies;
-    const decode = await Token.verifyToken(token.userToken);
     const { finger } = req.files;
+    const { id } = req.body;
 
     let uniqueName = uuidv4();
     let imgSource = `/fingers/${uniqueName}${finger.name.slice(finger.name.indexOf("."))}`;
@@ -147,7 +182,7 @@ module.exports.setFinger = async (req,res) =>{
         if(err) {
             console.log(err);
         } else {
-            biometrics.setFinger(imgSource, decode.id)
+            biometrics.setFinger(imgSource, id)
             .then( data => {
                 res.send({
                     success: true,
@@ -213,8 +248,8 @@ module.exports.deleteMethod = async (req,res) =>{
 }
 
 module.exports.setFace = async (req,res) =>{
-    const token = req.cookies;
-    const decode = await Token.verifyToken(token.userToken);
+    console.log(req.files)
+    const { id } = req.body;
     const { face } = req.files;
 
     let uniqueName = uuidv4();
@@ -223,7 +258,7 @@ module.exports.setFace = async (req,res) =>{
         if(err) {
             console.log(err);
         } else {
-            biometrics.setFace(imgSource, decode.id)
+            biometrics.setFace(imgSource, id)
             .then( data => {
                 res.send({
                     success: true,

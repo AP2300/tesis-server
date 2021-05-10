@@ -142,7 +142,7 @@ exports.getCode = (id) => {
     });
 }
 
-exports.setFinger = (finger, id) => {
+exports.setFinger = (finger, id, fingerName) => {
     console.log("Empezo")
     return new Promise( (resolve, reject) =>{
         console.log(":O")
@@ -154,11 +154,11 @@ exports.setFinger = (finger, id) => {
                     return conn.rollback(function() {
                         return reject({
                             query: false,
-                            msg: 'Ha ocurrido un error al registrar la cara'
+                            msg: 'Ha ocurrido un error al registrar la foto'
                         })
                     });
                 }
-                conn.query('SELECT biometrics.IDSecurity, Name, data from biometrics inner join security on biometrics.IDSecurity = security.IDSecurity where biometrics.IDUser = ? AND biometrics.IDSecurity = 2', id, function (error, results, fields) {
+                conn.query('SELECT biometrics.IDSecurity, Name, data from biometrics inner join security on biometrics.IDSecurity = security.IDSecurity where biometrics.IDUser = ? AND biometrics.IDSecurity = 2 AND biometrics.fingerName = ?', [id, fingerName], function (error, results, fields) {
                     console.log("Primer query");
                     if (error) {
                         return conn.rollback(function() {
@@ -171,7 +171,7 @@ exports.setFinger = (finger, id) => {
                             });
                         });
                     } else if (results.length == 0) {
-                        conn.query('INSERT INTO biometrics SET ?', {IDSecurity: 2, IDUser: id, data: finger, IsActive: 1}, (err ,res, fields) =>{
+                        conn.query('INSERT INTO biometrics SET ?', {IDSecurity: 2, IDUser: id, data: finger, IsActive: 1, fingerName}, (err ,res, fields) =>{
                             console.log("segundo query")
                             if(err){
                                 console.error('Ha ocurrido un error al solicitar data', err.stack);
@@ -202,34 +202,9 @@ exports.setFinger = (finger, id) => {
                             }
                         })
                     } else {
-                        conn.query('UPDATE biometrics SET ? WHERE IDUser = ? AND IDSecurity = ?', [{data: finger}, id, 2], function (error, res, fields) {
-                            console.log("Primer query else")
-                            if (error) {
-                                console.error('Ha ocurrido un error al solicitar data', err.stack);
-                                return conn.rollback(function() {
-                                    return reject({
-                                        query: false,
-                                        msg: 'Ha ocurrido un error al registrar el dedo'
-                                    })
-                                });
-                            }
-                            conn.commit(function(err) {
-                                if (err) {
-                                    console.error('Ha ocurrido un error al solicitar data', err.stack);
-                                    return conn.rollback(function() {
-                                        return reject({
-                                            query: false,
-                                            msg: 'Ha ocurrido un error al registrar el dedo'
-                                        })
-                                    });
-                                }
-                                console.log('success!');
-                                return resolve({
-                                    query: true,
-                                    msg: 'Exito',
-                                    data: res[0]
-                                });
-                            });
+                        return reject({
+                            query: false,
+                            msg: 'Ya hay un dedo creado.',
                         });
                     }
                 });
@@ -339,35 +314,10 @@ exports.setFace = (face, id) => {
                             }
                         })
                     } else {
-                        conn.query('UPDATE biometrics SET ? WHERE IDUser = ? AND IDSecurity = ?', [{data: face}, id, 3], function (error, res, fields) {
-                            console.log("Primer query else")
-                            if (error) {
-                                console.error('Ha ocurrido un error al solicitar data', err.stack);
-                                return conn.rollback(function() {
-                                    return reject({
-                                        query: false,
-                                        msg: 'Ha ocurrido un error al registrar la cara'
-                                    })
-                                });
-                            }
-                            conn.commit(function(err) {
-                                if (err) {
-                                    console.error('Ha ocurrido un error al solicitar data', err.stack);
-                                    return conn.rollback(function() {
-                                        return reject({
-                                            query: false,
-                                            msg: 'Ha ocurrido un error al registrar la cara'
-                                        })
-                                    });
-                                }
-                                console.log('success!');
-                                return resolve({
-                                    query: true,
-                                    msg: 'Exito',
-                                    data: res[0]
-                                });
-                            });
-                        });
+                        return reject({
+                            query: false,
+                            msg: 'Ya hay una imagen facial registrada'
+                        })
                     }
                 });
             });        
