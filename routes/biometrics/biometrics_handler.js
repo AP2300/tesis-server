@@ -4,7 +4,7 @@ const   Token             = require('../../models/token'),
         fs                = require('fs');
 
 module.exports.validData = (req,res,next) =>{
-    const {code, pass, id} = req.body;
+    const {code, pass, id, fingerName} = req.body;
 
     switch(req.route.path) {
         case "/setCode":
@@ -47,6 +47,12 @@ module.exports.validData = (req,res,next) =>{
                 return res.send({
                     success: false,
                     msg: "id no esta en el body"
+                })
+            }
+            if(!fingerName) {
+                return res.send({
+                    success: false,
+                    msg: "fingerName no esta en el body"
                 })
             }
             break
@@ -174,7 +180,7 @@ module.exports.getCode = async (req,res) =>{
 
 module.exports.setFinger = async (req,res) =>{
     const { finger } = req.files;
-    const { id } = req.body;
+    const { id, fingerName } = req.body;
 
     let uniqueName = uuidv4();
     let imgSource = `/fingers/${uniqueName}${finger.name.slice(finger.name.indexOf("."))}`;
@@ -182,7 +188,7 @@ module.exports.setFinger = async (req,res) =>{
         if(err) {
             console.log(err);
         } else {
-            biometrics.setFinger(imgSource, id)
+            biometrics.setFinger(imgSource, id, fingerName)
             .then( data => {
                 res.send({
                     success: true,
@@ -193,7 +199,7 @@ module.exports.setFinger = async (req,res) =>{
                 console.log("aqui fue");
                 console.log(err);
                 console.log(`${imgSource}`);
-                fs.unlink(`./resources${imgSource}`, (err => {
+                fs.unlink(`./resources/uploads${imgSource}`, (err => {
                     if (err) console.log(err);
                     else {
                         console.log("se borro");
@@ -234,6 +240,12 @@ module.exports.deleteMethod = async (req,res) =>{
 
     biometrics.deleteMethod(id)
     .then( data => {
+        fs.unlink(`./resources/uploads${data.data}`, (err => {
+            if (err) console.log(err);
+            else {
+                console.log("se borro");
+            }
+        }));
         res.send({
             success: true,
             msg: data.msg
@@ -269,7 +281,7 @@ module.exports.setFace = async (req,res) =>{
                 console.log("aqui fue");
                 console.log(err);
                 console.log(`${imgSource}`);
-                fs.unlink(`./resources/faces${imgSource}`, (err => {
+                fs.unlink(`./resources/uploads${imgSource}`, (err => {
                     if (err) console.log(err);
                     else {
                         console.log("se borro");
