@@ -158,8 +158,9 @@ exports.setFinger = (finger, id, fingerName) => {
                         })
                     });
                 }
-                conn.query('SELECT biometrics.IDSecurity, Name, data from biometrics inner join security on biometrics.IDSecurity = security.IDSecurity where biometrics.IDUser = ? AND biometrics.IDSecurity = 2 AND biometrics.fingerName = ?', [id, fingerName], function (error, results, fields) {
+                conn.query('SELECT biometrics.IDSecurity, Name, data, IDBiometrics, fingerName from biometrics inner join security on biometrics.IDSecurity = security.IDSecurity where biometrics.IDUser = ? AND biometrics.IDSecurity = 2 AND biometrics.fingerName = ?', [id, fingerName], function (error, results, fields) {
                     console.log("Primer query");
+                    console.log(results)
                     if (error) {
                         return conn.rollback(function() {
                             console.error('Ha ocurrido un error al solicitar data', err.stack);
@@ -236,8 +237,8 @@ exports.getFinger = (id) => {
 
 exports.deleteMethod = (id) => {
     return new Promise( (resolve, reject) =>{
-        DB.query('DELETE FROM biometrics WHERE IDBiometrics = ?', id, (err,res) =>{
-            console.log(res);
+        DB.query('SELECT * FROM biometrics WHERE IDBiometrics = ?', id, (err,data) =>{
+            console.log(data);
             if(err){
                 console.error('Ha ocurrido un error al eliminar el metodo', err.stack);
                 return reject({
@@ -245,12 +246,26 @@ exports.deleteMethod = (id) => {
                     msg: 'Ha ocurrido un error al eliminar el metodo'
                 })
             } else {
-                return resolve({
-                    query: true,
-                    msg: "Exito"
+                DB.query('DELETE FROM biometrics WHERE IDBiometrics = ?', id, (err,res) =>{
+                    console.log(res);
+                    if(err){
+                        console.error('Ha ocurrido un error al eliminar el metodo', err.stack);
+                        return reject({
+                            query: false,
+                            msg: 'Ha ocurrido un error al eliminar el metodo'
+                        })
+                    } else {
+                        console.log(res)
+                        return resolve({
+                            query: true,
+                            msg: "Exito",
+                            data: data[0].data
+                        })
+                    }
                 })
             }
         })
+        
     })
 };
 
