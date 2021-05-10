@@ -1,17 +1,17 @@
-const token     = require('../../models/token'); 
-const login     = require('./login');
-const bcrypt    = require('bcryptjs');
+const token = require('../../models/token');
+const login = require('./login');
+const bcrypt = require('bcryptjs');
 
-module.exports.validData = (req,res,next) =>{
-    const {email, pass} = req.body;
+module.exports.validData = (req, res, next) => {
+    const { email, pass } = req.body;
 
-    if(!email){
+    if (!email) {
         return res.send({
             success: false,
             msg: "El Correo esta vacio"
         })
-    } 
-    if(!pass){
+    }
+    if (!pass) {
         return res.send({
             success: false,
             msg: "La Clave esta vacio"
@@ -21,61 +21,68 @@ module.exports.validData = (req,res,next) =>{
     next();
 }
 
-module.exports.loginUser = (req,res) =>{
-    const {email, pass} = req.body;
+module.exports.loginUser = (req, res) => {
+    const { email, pass } = req.body;
 
     login.login(email)
-    .then(async (data) =>{
-        if(data == undefined){
-            res.send({
-                success: false,
-                msg: 'El Correo no existe'
-            }) 
-        }else{
-            bcrypt.compare(String(pass), data.Password, (err, result) =>{
-                if(err){
-                    console.log(err);
-                } else if(result){
-                    const payLoad = {
-                        id: data.IDUser,
-                        email: data.Email,
-                        FullName: data.FullName
-                    }
+        .then(async (data) => {
+            if (data == undefined) {
+                res.send({
+                    success: false,
+                    msg: 'El Correo no existe'
+                })
+            } else {
+                bcrypt.compare(String(pass), data.Password, (err, result) => {
+                    if (err) {
+                        console.log(err);
+                    } else if (result) {
+                        const payLoad = {
+                            id: data.IDUser,
+                            email: data.Email,
+                            FullName: data.FullName
+                        }
+                        if (data.IsActive) {
+                            token.signToken(payLoad)
+                                .then(token => {
 
-                    token.signToken(payLoad)
-                    .then(token =>{
-
-                        res.cookie('userToken', token, {
-                            expires: new Date(Date.now() + 600000),
-                            httpOnly: true
-                        }, { signed: true })
-                        res.status(200).send({
-                            success: true
-                        })
-                    })
-                    .catch(err =>{
-                        console.error("Error al firmar el Token",err)
+                                    res.cookie('userToken', token, {
+                                        expires: new Date(Date.now() + 600000),
+                                        httpOnly: true
+                                    }, { signed: true })
+                                    res.status(200).send({
+                                        success: true,
+                                        isActive: data.IsActive
+                                    })
+                                })
+                                .catch(err => {
+                                    console.error("Error al firmar el Token", err)
+                                    res.send({
+                                        success: false,
+                                        msg: "Error en el token"
+                                    })
+                                })
+                        }else{
+                            res.status(200).send({
+                                success: true,
+                                isActive: data.IsActive
+                            })
+                        }
+                    } else {
+                        console.error("La Clave es Incorrecta")
                         res.send({
                             success: false,
-                            msg: "Error en el token"
+                            msg: "La clave es Incorrecta"
                         })
-                    })
-                } else{
-                    console.error("La Clave es Incorrecta")
-                    res.send({
-                        success: false,
-                        msg: "La clave es Incorrecta"
-                    })
-                }
-            })
-        }
-        
-    })
-    .catch(err =>{
-        console.error("Error al realizar el login",err);
-        res.send({
-            success: false,
-            msg: "Error al realizar el login"
+                    }
+                })
+            }
+
         })
-    })
+        .catch(err => {
+            console.error("Error al realizar el login", err);
+            res.send({
+                success: false,
+                msg: "Error al realizar el login"
+            })
+        })
 }
