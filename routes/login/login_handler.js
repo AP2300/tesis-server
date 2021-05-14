@@ -137,7 +137,7 @@ module.exports.CheckIsUserActive = async (req, res) =>{
     const tokenCookie = req.cookies;
     const decode = await token.verifyToken(tokenCookie.userToken);
 
-    login.CheckIfActive(decode.id, token)
+    login.CheckIfActive(decode.id, tokenCookie.userToken)
     .then(data=>{
         if(data){
             res.send({

@@ -97,7 +97,7 @@ exports.CheckIfActive = (id, token) =>{
                     msg: 'error comprobando al ususario'
                 })
             }
-            if(res[0].Session === "Active"){
+            if(res[0].Session === token){
                 return resolve(true);
             }else{
                 DB.query(`ALTER EVENT event_User_? DISABLE`, [id], (err, response) => {
@@ -105,7 +105,7 @@ exports.CheckIfActive = (id, token) =>{
                         console.error('Ha ocurrido un error al solicitar data', err.stack);
                         return reject({
                             query: false,
-                            msg: 'Ha ocurrido un error en el login'
+                            msg: 'Ha ocurrido un error en el checkSession'
                         })
                     }
                     DB.query("UPDATE `users` SET `Session` = NULL WHERE `users`.`IDUser` = ?", [id], (error, re) => {
@@ -113,7 +113,7 @@ exports.CheckIfActive = (id, token) =>{
                             console.error('Ha ocurrido un error al solicitar data', error.stack);
                             return reject({
                                 query: false,
-                                msg: 'Ha ocurrido un error en el login al alterar session en el usuario'
+                                msg: 'Ha ocurrido un error en el checkSession al alterar session en el usuario'
                             })
                         }
                         resolve(false)
