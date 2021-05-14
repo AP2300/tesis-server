@@ -40,7 +40,8 @@ const login = require("./routes/login");
 const middle = require("./routes/middleware");
 const user = require("./routes/user");
 const biometrics = require("./routes/biometrics");
-const admin = require("./routes/admin")
+const admin = require("./routes/admin");
+const records = require("./routes/records")
 
 app.post('/login', login.validData, login.loginUser);
 app.post('/register', register.validData, register.registerUser);
@@ -54,7 +55,8 @@ app.get('/getCode', middle.authHeader, middle.validSign, user.InSession, biometr
 app.post('/setFinger', middle.authHeader, middle.validSign, user.InSession, biometrics.validData, biometrics.setFinger);
 app.get('/getFinger', middle.authHeader, middle.validSign, user.InSession, biometrics.validData, biometrics.getFinger);
 app.post('/setFace', middle.authHeader, middle.validSign, user.InSession, biometrics.validData, biometrics.setFace);
-app.get('/getFace', middle.authHeader, middle.validSign, user.InSession, biometrics.validData, biometrics.getFace);
+app.get('/getFace', middle.authHeader, middle.validSign, biometrics.validData, biometrics.getFace);
+app.post('/setRecord', middle.authHeader, middle.validSign, records.validData, records.setRecord);
 app.get("/Search", middle.authHeader, middle.validSign, user.InSession, biometrics.validData, user.GetUsersData)
 app.get("/UserHistory", middle.authHeader, middle.validSign, user.InSession, user.GetUserHistoryData)
 app.get("/profile", middle.authHeader, middle.validSign, user.InSession, user.GetProfileData)
