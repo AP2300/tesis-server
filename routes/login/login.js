@@ -77,3 +77,41 @@ exports.ActiveSession = (id) => {
         })
     })
 }
+
+exports.CheckIfActive = (id, token) =>{
+    return new Promise((resolve, reject)=>{
+        DB.query('SELECT Session FROM users WHERE IDUser = ?', [id], (err, res)=>{
+            if(err){
+                console.error(err)
+                return reject({
+                    query: false,
+                    msg: 'error comprobando al ususario'
+                })
+            }
+            if(res[0].Session === "Active"){
+                return resolve(true);
+            }else{
+                DB.query(`ALTER EVENT event_User_? DISABLE`, [id], (err, response) => {
+                    if (err) {
+                        console.error('Ha ocurrido un error al solicitar data', err.stack);
+                        return reject({
+                            query: false,
+                            msg: 'Ha ocurrido un error en el login'
+                        })
+                    }
+                    DB.query("UPDATE `users` SET `Session` = NULL WHERE `users`.`IDUser` = ?", [id], (error, re) => {
+                        if (error) {
+                            console.error('Ha ocurrido un error al solicitar data', error.stack);
+                            return reject({
+                                query: false,
+                                msg: 'Ha ocurrido un error en el login al alterar session en el usuario'
+                            })
+                        }
+                        resolve(false)
+                    })
+                })
+        
+            }
+        })
+    })
+}

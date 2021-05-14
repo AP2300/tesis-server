@@ -132,3 +132,21 @@ module.exports.loginUser = (req, res) => {
             })
         })
 }
+
+module.exports.CheckIsUserActive = async (req, res) =>{
+    const tokenCookie = req.cookies;
+    const decode = await token.verifyToken(tokenCookie.userToken);
+
+    login.CheckIfActive(decode.id, token)
+    .then(data=>{
+        if(data){
+            res.send({
+                success: true,
+                msg: "sesion activa",
+                session: "active"
+            })
+        }else{
+            res.clearCookie("userToken", { httpOnly: true }, { signed: true }).json({ success: true, session: "vencida" })
+        }
+    })
+}
