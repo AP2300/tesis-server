@@ -69,6 +69,7 @@ app.post("/deleteUser", middle.authHeader, middle.validSign, user.InSession, adm
 app.delete("/deleteMethod", middle.authHeader, middle.validSign, user.InSession, biometrics.validData, biometrics.deleteMethod)
 app.post("/updateProfile", middle.authHeader, middle.validSign, user.InSession, user.UpdateProfilePicture)
 app.post("/deleteProfile", middle.authHeader, middle.validSign, user.InSession, user.DeletePicture)
+app.get("/checkSession", middle.authHeader, middle.validSign, login.CheckIsUserActive)
 
 app.post("/andresesdios", middle.authHeader, middle.validSign, user.InSession, (req, res) => {
     console.log(req.cookies);

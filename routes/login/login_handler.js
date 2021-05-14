@@ -67,7 +67,7 @@ module.exports.loginUser = (req, res) => {
                             token.signToken(payLoad)
                                 .then(token => {
 
-                                    login.ActiveSession(data.IDUser)
+                                    login.ActiveSession(data.IDUser,token)
                                         .then(async (Session) => {
                                             if (Session === false) {
                                                 res.send({
@@ -131,4 +131,22 @@ module.exports.loginUser = (req, res) => {
                 msg: "Error al realizar el login"
             })
         })
+}
+
+module.exports.CheckIsUserActive = async (req, res) =>{
+    const tokenCookie = req.cookies;
+    const decode = await token.verifyToken(tokenCookie.userToken);
+
+    login.CheckIfActive(decode.id, tokenCookie.userToken)
+    .then(data=>{
+        if(data){
+            res.send({
+                success: true,
+                msg: "sesion activa",
+                session: "active"
+            })
+        }else{
+            res.clearCookie("userToken", { httpOnly: true }, { signed: true }).json({ success: true, session: "vencida" })
+        }
+    })
 }
