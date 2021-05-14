@@ -41,7 +41,7 @@ exports.logOut = (id) => {
     })
 }
 
-exports.ActiveSession = (id) => {
+exports.ActiveSession = (id,token) => {
     return new Promise((resolve, reject) => {
         DB.query('SELECT Session FROM users WHERE IDUser = ?', [id], (er, res) => {
             if (er) {
@@ -54,7 +54,7 @@ exports.ActiveSession = (id) => {
             if (!isNull(res[0].Session)) {
                 return resolve(false);
             } else {
-                DB.query("UPDATE `users` SET `Session` = ? WHERE `users`.`IDUser` = ?", ["Active", id], (error, re) => {
+                DB.query("UPDATE `users` SET `Session` = ? WHERE `users`.`IDUser` = ?", [token, id], (error, re) => {
                     if (error) {
                         console.error('Ha ocurrido un error al solicitar data', error.stack);
                         return reject({
@@ -70,7 +70,16 @@ exports.ActiveSession = (id) => {
                                 msg: 'Ha ocurrido un error en el login al alterar el evento'
                             })
                         }
-                        resolve(true)
+                        DB.query(`SET GLOBAL event_scheduler="ON"`, (e, response) => {
+                            if (e) {
+                                console.error('Ha ocurrido un error al solicitar data', e.stack);
+                                return reject({
+                                    query: false,
+                                    msg: 'Ha ocurrido un error en el login al Activar los evento'
+                                })
+                            }
+                            resolve(true)
+                        })
                     })
                 })
             }

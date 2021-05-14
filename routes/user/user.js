@@ -194,7 +194,7 @@ exports.RemovePicture = (data) => {
     })
 }
 
-exports.inSession = (id) => {
+exports.inSession = (id, token) => {
     return new Promise((resolve, reject) => {
         DB.query('SELECT Session FROM users WHERE IDUser = ?', [id], (err, res) => {
             if (err) {
@@ -204,10 +204,10 @@ exports.inSession = (id) => {
                     msg: "ha ocurrido un error al recuperar el acceso"
                 })
             }
-            if(isNull(res[0].Session)){
-               resolve(false); 
+            if (res[0].Session !== token) {                
+                resolve(false);
             }
-            else{
+            else {
                 DB.query(`ALTER EVENT event_User_? ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 5 MINUTE`, [id], (error, response) => {
                     if (error) {
                         console.error("error al editar el evento", error.stack)
@@ -216,7 +216,7 @@ exports.inSession = (id) => {
                             msg: "ha ocurrido un error al editar el evento"
                         })
                     }
-                    return resolve([res[0].Session,response])
+                    return resolve([res[0].Session, response])
                 })
             }
         })

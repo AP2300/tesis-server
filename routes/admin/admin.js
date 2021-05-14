@@ -54,18 +54,22 @@ exports.ChangeState = data => {
 
 exports.deleteUser = id => {
     return new Promise((resolve, reject) => {
-        DB.query(`DELETE users
-        FROM
-          users
-        WHERE
-          users.IDUser = ?`, [id], (err, res) => {
+        DB.query(`DELETE users FROM users WHERE users.IDUser = ?`, [id], (err, res) => {
             if (err === undefined) {
                 return reject({
                     query: false,
                     msg: "error al eliminar al usuario"
                 })
             }
-            resolve(res)
+            DB.query(`DROP EVENT IF EXISTS event_User_?`, [id], (error, res) => {
+                if (error === undefined) {
+                    return reject({
+                        query: false,
+                        msg: "error al eliminar al usuario"
+                    })
+                }
+                resolve(res)
+            })
         })
     })
 }
