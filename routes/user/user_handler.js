@@ -339,7 +339,7 @@ module.exports.InSession = async (req, res, next) => {
     const token = req.cookies;
     const decode = await Token.verifyToken(token.userToken);
 
-    user.inSession(decode.id)
+    user.inSession(decode.id,token.userToken)
         .then(data => {
             if (data === false || data === undefined) {
                 return res.status(401).send({

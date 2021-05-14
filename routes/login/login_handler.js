@@ -67,7 +67,7 @@ module.exports.loginUser = (req, res) => {
                             token.signToken(payLoad)
                                 .then(token => {
 
-                                    login.ActiveSession(data.IDUser)
+                                    login.ActiveSession(data.IDUser,token)
                                         .then(async (Session) => {
                                             if (Session === false) {
                                                 res.send({
