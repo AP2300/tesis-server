@@ -6,7 +6,6 @@ const express = require("express"),
     cookieParser = require("cookie-parser"),
     fs = require("fs"),
     { v4: uuidv4 } = require('uuid'),
-    MySqlStore = require("express-mysql-session"),
     dotenv = require('dotenv');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,7 +19,6 @@ app.use(cookieParser(process.env.COOKIE_SECRET, {
     maxAge: null,
     sameSite: 'lax'
 }))
-
 
 app.use(express.static(__dirname + '/resources/uploads'));
 app.use(express.json({ 'limit': '1mb' }));
@@ -46,36 +44,35 @@ const admin = require("./routes/admin")
 
 app.post('/login', login.validData, login.loginUser);
 app.post('/register', register.validData, register.registerUser);
-app.post('/updateUserPass', middle.authHeader, middle.validSign, user.UpdatePassword);
-app.get("/Home", middle.authHeader, middle.validSign, user.GetUserData);
-app.get("/access_data", middle.authHeader, middle.validSign, user.GetUserAccess)
-app.get("/logOut", (_, res) => { res.clearCookie("userToken", { httpOnly: true }, { signed: true }).json({ success: true }) })
-app.post('/setCode', middle.authHeader, middle.validSign, biometrics.validData, biometrics.setCode);
+app.post('/updateUserPass', middle.authHeader, middle.validSign, user.InSession, user.UpdatePassword);
+app.get("/Home", middle.authHeader, middle.validSign, user.InSession, user.GetUserData);
+app.get("/access_data", middle.authHeader, middle.validSign, user.InSession, user.GetUserAccess)
+app.get("/logOut", login.LogOut)
+app.post('/setCode', middle.authHeader, middle.validSign, user.InSession, biometrics.validData, biometrics.setCode);
 app.get('/verifyCode', biometrics.verifyCode);
-app.get('/getCode', middle.authHeader, middle.validSign, biometrics.validData, biometrics.getCode);
-app.post('/setFinger', middle.authHeader, middle.validSign, biometrics.validData, biometrics.setFinger);
-app.get('/getFinger', middle.authHeader, middle.validSign, biometrics.validData, biometrics.getFinger);
-app.post('/setFace', middle.authHeader, middle.validSign, biometrics.validData, biometrics.setFace);
-app.get('/getFace', middle.authHeader, middle.validSign, biometrics.validData, biometrics.getFace);
-app.get("/Search", middle.authHeader, middle.validSign, biometrics.validData, user.GetUsersData)
-app.get("/UserHistory", middle.authHeader, middle.validSign, user.GetUserHistoryData)
-app.get("/profile", middle.authHeader, middle.validSign, user.GetProfileData)
-app.post("/editProfile", middle.authHeader, middle.validSign, user.UpdateData)
-app.post("/bioUpdate", middle.authHeader, middle.validSign, user.UpdateAuthMethods)
-app.post("/AdminUpdateData", middle.authHeader, middle.validSign, admin.UpdateDataAdmin)
-app.post("/AdminUpdatePass", middle.authHeader, middle.validSign, admin.UpdatePassAdmin)
-app.post("/changeState", middle.authHeader, middle.validSign, admin.UserStateUpdate)
-app.post("/deleteUser", middle.authHeader, middle.validSign, admin.DeleteUser)
-app.delete("/deleteMethod", middle.authHeader, middle.validSign, biometrics.validData, biometrics.deleteMethod)
-app.post("/updateProfile", middle.authHeader, middle.validSign, user.UpdateProfilePicture)
-app.post("/deleteProfile", middle.authHeader, middle.validSign, user.DeletePicture)
+app.get('/getCode', middle.authHeader, middle.validSign, user.InSession, biometrics.validData, biometrics.getCode);
+app.post('/setFinger', middle.authHeader, middle.validSign, user.InSession, biometrics.validData, biometrics.setFinger);
+app.get('/getFinger', middle.authHeader, middle.validSign, user.InSession, biometrics.validData, biometrics.getFinger);
+app.post('/setFace', middle.authHeader, middle.validSign, user.InSession, biometrics.validData, biometrics.setFace);
+app.get('/getFace', middle.authHeader, middle.validSign, user.InSession, biometrics.validData, biometrics.getFace);
+app.get("/Search", middle.authHeader, middle.validSign, user.InSession, biometrics.validData, user.GetUsersData)
+app.get("/UserHistory", middle.authHeader, middle.validSign, user.InSession, user.GetUserHistoryData)
+app.get("/profile", middle.authHeader, middle.validSign, user.InSession, user.GetProfileData)
+app.post("/editProfile", middle.authHeader, middle.validSign, user.InSession, user.UpdateData)
+app.post("/bioUpdate", middle.authHeader, middle.validSign, user.InSession, user.UpdateAuthMethods)
+app.post("/AdminUpdateData", middle.authHeader, middle.validSign, user.InSession, admin.UpdateDataAdmin)
+app.post("/AdminUpdatePass", middle.authHeader, middle.validSign, user.InSession, admin.UpdatePassAdmin)
+app.post("/changeState", middle.authHeader, middle.validSign, user.InSession, admin.UserStateUpdate)
+app.post("/deleteUser", middle.authHeader, middle.validSign, user.InSession, admin.DeleteUser)
+app.delete("/deleteMethod", middle.authHeader, middle.validSign, user.InSession, biometrics.validData, biometrics.deleteMethod)
+app.post("/updateProfile", middle.authHeader, middle.validSign, user.InSession, user.UpdateProfilePicture)
+app.post("/deleteProfile", middle.authHeader, middle.validSign, user.InSession, user.DeletePicture)
 
-app.post("/andresesdios", middle.authHeader, middle.validSign, (req, res) => {
+app.post("/andresesdios", middle.authHeader, middle.validSign, user.InSession, (req, res) => {
     console.log(req.cookies);
     console.log("usuario logueado");
     res.send("Eres un dios");
 });
-
 
 app.listen(app.get("port"), function (err) {
     if (err) console.log(err);

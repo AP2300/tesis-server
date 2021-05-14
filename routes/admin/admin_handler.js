@@ -1,8 +1,6 @@
 const token = require('../../models/token');
 const admin = require('./admin');
 
-
-
 module.exports.UpdateDataAdmin = (req, res) => {
     const data = req.body
     admin.UpdateData(data)

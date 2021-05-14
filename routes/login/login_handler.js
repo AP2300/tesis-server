@@ -21,6 +21,28 @@ module.exports.validData = (req, res, next) => {
     next();
 }
 
+module.exports.LogOut = async (req, res) => {
+    const tokenCookie = req.cookies;
+    const decode = await token.verifyToken(tokenCookie.userToken);
+
+    login.logOut(decode.id)
+    .then(async (data) => {
+        if(data === undefined){
+            res.send({
+                success: false,
+                msg: 'Hubo un error'
+            })
+        }
+        else if(data) {
+            res.clearCookie("userToken", { httpOnly: true }, { signed: true }).json({ success: true })
+        }
+    })
+    .catch(err => {
+        console.error("Error al realizar el logOut", err);
+        res.clearCookie("userToken", { httpOnly: true }, { signed: true }).json({ success: true })
+    })
+}
+
 module.exports.loginUser = (req, res) => {
     const { email, pass } = req.body;
 
@@ -45,14 +67,38 @@ module.exports.loginUser = (req, res) => {
                             token.signToken(payLoad)
                                 .then(token => {
 
-                                    res.cookie('userToken', token, {
-                                        expires: new Date(Date.now() + 600000),
-                                        httpOnly: true
-                                    }, { signed: true })
-                                    res.status(200).send({
-                                        success: true,
-                                        isActive: data.IsActive
-                                    })
+                                    login.ActiveSession(data.IDUser)
+                                        .then(async (Session) => {
+                                            if (Session === false) {
+                                                res.send({
+                                                    success: false,
+                                                    session: true,
+                                                    msg: 'El usuario ya tiene una sesion activa, Espere 5 Minutos'
+                                                })
+                                            } else if (Session) {
+                                                res.cookie('userToken', token, {
+                                                    // expires: new Date(Date.now() + 1000000),
+                                                    httpOnly: true
+                                                }, { signed: true })
+
+                                                res.status(200).send({
+                                                    success: true,
+                                                    isActive: data.IsActive
+                                                })
+                                            } else {
+                                                res.send({
+                                                    success: false,
+                                                    msg: "Error al realizar el login, problema con el evento"
+                                                })
+                                            }
+                                        })
+                                        .catch(err => {
+                                            console.error("Error al cambiar el evento de sesion del usuario", err);
+                                            res.send({
+                                                success: false,
+                                                msg: "Error al realizar el login, evento no cambiado"
+                                            })
+                                        })
                                 })
                                 .catch(err => {
                                     console.error("Error al firmar el Token", err)
@@ -61,7 +107,7 @@ module.exports.loginUser = (req, res) => {
                                         msg: "Error en el token"
                                     })
                                 })
-                        }else{
+                        } else {
                             res.status(200).send({
                                 success: true,
                                 isActive: data.IsActive

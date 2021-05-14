@@ -1,4 +1,4 @@
-const DB = require('../../connections/Dbconection');
+const DB = require('../../connections/Dbconection pruebas');
 const { customAlphabet } = require('nanoid')
 const nanoid = customAlphabet('1234567890', 6)
 const bcrypt = require('bcryptjs')
@@ -34,16 +34,23 @@ exports.register = (data) => {
                                     } else {
                                         const code = await nanoid()
                                         DB.query('INSERT INTO biometrics SET ?',
-                                            {IDSecurity: 1, IDUser: result.insertId, data: code, IsActive: 1}, (err, res) => {
-                                                if (err) {
+                                            { IDSecurity: 1, IDUser: result.insertId, data: code, IsActive: 1 }, (er, res) => {
+                                                if (er) {
                                                     console.log('Error en el Registro', err.stack);
                                                     return reject('Error en el Registro');
                                                 }
-                                                resolve({
-                                                    query: true,
-                                                    msg: 'El Usuario ha sido Registrado Satisfactoriamente',
-                                                    Inserted: result.insertId
-                                                });
+                                                DB.query('CREATE EVENT event_User_? ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 1 MINUTE ON COMPLETION PRESERVE DO UPDATE `users` SET `Session` = NULL WHERE `users`.`IDUser` = ?',
+                                                    [result.insertId, result.insertId], (e, response) => {
+                                                        if (er) {
+                                                            console.log('Error en el Registro al crear el evento', err.stack);
+                                                            return reject('Error en el Registro al crear el evento');
+                                                        }
+                                                        resolve({
+                                                            query: true,
+                                                            msg: 'El Usuario ha sido Registrado Satisfactoriamente',
+                                                            Inserted: result.insertId
+                                                        });
+                                                    })
                                             })
                                     }
 

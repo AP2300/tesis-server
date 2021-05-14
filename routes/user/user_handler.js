@@ -314,10 +314,10 @@ module.exports.UpdateProfilePicture = async (req, res) => {
 module.exports.DeletePicture = (req, res) => {
     const data = req.body
 
-        fs.unlink(`./resources/uploads/${data.actualPicture}`, err =>{
-            if(err) console.error("ocurrio un error", err.stack)
-            else{
-                user.RemovePicture(data)
+    fs.unlink(`./resources/uploads/${data.actualPicture}`, err => {
+        if (err) console.error("ocurrio un error", err.stack)
+        else {
+            user.RemovePicture(data)
                 .then(data => {
                     if (data === undefined) {
                         return res.send({
@@ -331,6 +331,31 @@ module.exports.DeletePicture = (req, res) => {
                         })
                     }
                 })
+        }
+    })
+}
+
+module.exports.InSession = async (req, res, next) => {
+    const token = req.cookies;
+    const decode = await Token.verifyToken(token.userToken);
+
+    user.inSession(decode.id)
+        .then(data => {
+            if (data === false || data === undefined) {
+                return res.status(401).send({
+                    msg: "No tienes acceso que triste :<"
+                })
             }
+            else {
+                next();
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            return res.send({
+                succes: false,
+                log: false,
+                msg: "No se comprobo la sesion, hubo un error, hubo un error"
+            })
         })
 }

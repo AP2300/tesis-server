@@ -1,5 +1,6 @@
-const DB = require('../../connections/Dbconection');
+const DB = require('../../connections/Dbconection pruebas');
 const bcrypt = require('bcryptjs');
+const { isNull } = require('lodash');
 
 exports.GetData = (email) => {
     return new Promise((resolve, reject) => {
@@ -78,7 +79,7 @@ exports.getFullUserData = (id) => {
                 })
             }
             resolve(res)
-        })  
+        })
     })
 }
 exports.updateData = (Data, id) => {
@@ -147,10 +148,10 @@ exports.updatePassword = (Data, id) => {
     })
 }
 
-exports.UpdateAuth = (id,active) =>{
-    return new Promise((resolve, reject)=>{
-        DB.query('UPDATE biometrics SET IsActive = ? WHERE IDSecurity = ?',[active, id], (err, res)=>{
-            if(err){
+exports.UpdateAuth = (id, active) => {
+    return new Promise((resolve, reject) => {
+        DB.query('UPDATE biometrics SET IsActive = ? WHERE IDSecurity = ?', [active, id], (err, res) => {
+            if (err) {
                 console.error("error al actualizar los datos biometricos", err.stack)
                 return reject({
                     query: false,
@@ -162,10 +163,10 @@ exports.UpdateAuth = (id,active) =>{
     })
 }
 
-exports.UpdatePicture = (id, imgSource) =>{
-    return new Promise((resolve, reject)=>{
-        DB.query("UPDATE users SET Picture = ? WHERE IDUser = ?", [imgSource, id], (err, res)=>{
-            if(err){
+exports.UpdatePicture = (id, imgSource) => {
+    return new Promise((resolve, reject) => {
+        DB.query("UPDATE users SET Picture = ? WHERE IDUser = ?", [imgSource, id], (err, res) => {
+            if (err) {
                 console.error("error al actualizar la foto de perfil", err.stack);
                 return reject({
                     query: false,
@@ -178,10 +179,10 @@ exports.UpdatePicture = (id, imgSource) =>{
 }
 
 
-exports.RemovePicture = (data) =>{
-    return new Promise((resolve, reject)=>{
-        DB.query("UPDATE users SET Picture = ? WHERE IDUser = ?", ["null",data.id], (err, res)=>{
-            if(err){
+exports.RemovePicture = (data) => {
+    return new Promise((resolve, reject) => {
+        DB.query("UPDATE users SET Picture = ? WHERE IDUser = ?", ["null", data.id], (err, res) => {
+            if (err) {
                 console.error("error al actualizar la foto de perfil", err.stack);
                 return reject({
                     query: false,
@@ -189,6 +190,35 @@ exports.RemovePicture = (data) =>{
                 })
             }
             return resolve(res)
+        })
+    })
+}
+
+exports.inSession = (id) => {
+    return new Promise((resolve, reject) => {
+        DB.query('SELECT Session FROM users WHERE IDUser = ?', [id], (err, res) => {
+            if (err) {
+                console.error("error al solicitar los datos", err.stack)
+                return reject({
+                    query: false,
+                    msg: "ha ocurrido un error al recuperar el acceso"
+                })
+            }
+            if(isNull(res[0].Session)){
+               resolve(false); 
+            }
+            else{
+                DB.query(`ALTER EVENT event_User_? ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 5 MINUTE`, [id], (error, response) => {
+                    if (error) {
+                        console.error("error al editar el evento", error.stack)
+                        return reject({
+                            query: false,
+                            msg: "ha ocurrido un error al editar el evento"
+                        })
+                    }
+                    return resolve([res[0].Session,response])
+                })
+            }
         })
     })
 }
