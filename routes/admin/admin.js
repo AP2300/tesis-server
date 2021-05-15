@@ -1,4 +1,4 @@
-const DB = require('../../connections/Dbconection pruebas');
+const DB = require('../../connections/Dbconection');
 const bcrypt = require('bcryptjs');
 
 exports.UpdateData = (data) => {

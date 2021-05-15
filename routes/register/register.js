@@ -1,4 +1,4 @@
-const DB = require('../../connections/Dbconection pruebas');
+const DB = require('../../connections/Dbconection');
 const { customAlphabet } = require('nanoid')
 const nanoid = customAlphabet('1234567890', 6)
 const bcrypt = require('bcryptjs')

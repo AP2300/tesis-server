@@ -1,5 +1,5 @@
 const { isNull } = require('lodash');
-const DB = require('../../connections/Dbconection pruebas');
+const DB = require('../../connections/Dbconection');
 
 exports.login = (email) => {
     return new Promise((resolve, reject) => {

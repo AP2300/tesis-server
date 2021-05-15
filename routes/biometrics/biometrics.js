@@ -1,4 +1,4 @@
-const   DB = require('../../connections/Dbconection pruebas');
+const   DB = require('../../connections/Dbconection');
 
 exports.setCode = (code, id) => {
     return new Promise((resolve, reject) => {
