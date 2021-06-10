@@ -1,6 +1,12 @@
 const DB = require('../../connections/Dbconection');
 const bcrypt = require('bcryptjs');
 
+/**
+ * 
+ * @param {object} data del usuario para actualizarlo
+ * @returns resolve de la base de datos
+ */
+
 exports.UpdateData = (data) => {
     return new Promise((resolve, reject) => {
         DB.query("UPDATE users SET FullName = ?, Email = ?  WHERE IDUser = ?", [data.name, data.email, Number(data.id)], (err, res) => {
@@ -15,6 +21,12 @@ exports.UpdateData = (data) => {
         })
     })
 }
+
+/**
+ * 
+ * @param {object} data.id para actualizar la clave del usuario
+ * @returns resolve de la base de datos
+ */
 
 exports.UpdatePass = (data) => {
     return new Promise((resolve, reject) => {
@@ -37,6 +49,12 @@ exports.UpdatePass = (data) => {
     })
 }
 
+/**
+ * 
+ * @param {object} data para cambiar el estado de un Usuario
+ * @returns resolve de la base de datos
+ */
+
 exports.ChangeState = data => {
     return new Promise((resolve, reject) => {
         DB.query("UPDATE users SET IsActive = ? WHERE IDUser = ?", [data.state, data.id], (err, res) => {
@@ -51,6 +69,12 @@ exports.ChangeState = data => {
         })
     })
 }
+
+/**
+ * 
+ * @param {object} id para eliminar un usuario
+ * @returns resolve de la base de datos
+ */
 
 exports.deleteUser = id => {
     return new Promise((resolve, reject) => {

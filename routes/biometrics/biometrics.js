@@ -1,5 +1,12 @@
 const   DB = require('../../connections/Dbconection');
 
+
+/**
+ * 
+ * @param {object} data con el codigo a ingresar en la base de datos
+ * @returns un resolve con un mensaje de estado
+ */
+
 exports.setCode = (code, id) => {
     return new Promise((resolve, reject) => {
         DB.getConnection(function(err, conn) {
@@ -95,6 +102,12 @@ exports.setCode = (code, id) => {
     });
 }
 
+/**
+ * 
+ * @param {object} code el cual sera verificado con la base de datos
+ * @returns un resolve con un mensaje de estado
+ */
+
 exports.verifyCode = (code) => {
     return new Promise((resolve, reject) => {
         DB.query('SELECT data, IDUser FROM biometrics WHERE data = ?', code, (err, res) => {
@@ -121,6 +134,12 @@ exports.verifyCode = (code) => {
     })
 }
 
+/**
+ * 
+ * @param {object} id del usuario para obtener su codigo
+ * @returns un resolve con un mensaje de estado y el codigo del usuario
+ */
+
 exports.getCode = (id) => {
     return new Promise((resolve, reject) => {
         DB.query('SELECT data FROM biometrics WHERE IDUser = ? AND IDSecurity = ?', [id, 1], (err,res) =>{
@@ -141,6 +160,12 @@ exports.getCode = (id) => {
         })
     });
 }
+
+/**
+ * 
+ * @param {object} data con el id del usuario, la huella y su nombre a registrar en la base de datos
+ * @returns un resolve con un mensaje de estado
+ */
 
 exports.setFinger = (finger, id, fingerName) => {
     console.log("Empezo")
@@ -205,7 +230,7 @@ exports.setFinger = (finger, id, fingerName) => {
                     } else {
                         return reject({
                             query: false,
-                            msg: 'Ya hay un dedo creado.',
+                            msg: 'Ya existe una huella.',
                         });
                     }
                 });
@@ -213,6 +238,12 @@ exports.setFinger = (finger, id, fingerName) => {
         })
     });
 };
+
+/**
+ * 
+ * @param {object} id del usuario para obtener su huella
+ * @returns un resolve con un mensaje de estado y la huella del usuario
+ */
 
 exports.getFinger = (id) => {
     return new Promise( (resolve, reject) =>{
@@ -234,6 +265,12 @@ exports.getFinger = (id) => {
         })
     })
 };
+
+/**
+ * 
+ * @param {object} id del usuario al cual se le eliminara el metodo de autenticacion
+ * @returns un resolve con un mensaje de estado y los datos eliminados
+ */
 
 exports.deleteMethod = (id) => {
     return new Promise( (resolve, reject) =>{
@@ -269,10 +306,15 @@ exports.deleteMethod = (id) => {
     })
 };
 
+/**
+ * 
+ * @param {object} data con el id del usuario y su reconocimiento facial a registrar en la base de datos
+ * @returns un resolve con un mensaje de estado
+ */
+
 exports.setFace = (face, id) => {
     console.log("Empezo")
     return new Promise( (resolve, reject) =>{
-        console.log(":O")
         DB.getConnection(function(err, conn) {
             conn.beginTransaction(function(err) {
                 console.log("Inicio transaccion")
@@ -331,7 +373,7 @@ exports.setFace = (face, id) => {
                     } else {
                         return reject({
                             query: false,
-                            msg: 'Ya hay una imagen facial registrada'
+                            msg: 'Ya existe una imagen facial registrada'
                         })
                     }
                 });
@@ -339,6 +381,12 @@ exports.setFace = (face, id) => {
         })
     });
 };
+
+/**
+ * 
+ * @param {object} id del usuario para obtener el reconocimiento facial de la base de datos
+ * @returns un resolve con un mensaje de estado y imagen utilizada para el reconocimiento facial del usuario
+ */
 
 exports.getFace = (id) => {
     return new Promise( (resolve, reject) =>{

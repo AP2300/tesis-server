@@ -1,8 +1,15 @@
 const token = require('../../models/token');
 const admin = require('./admin');
 
+/**
+ * 
+ * @param {object} req con la informacion para actualizar un usuario
+ * @returns un objeto con un mensaje de estado
+ */
+
 module.exports.UpdateDataAdmin = (req, res) => {
-    const data = req.body
+    const data = req.body;
+
     admin.UpdateData(data)
         .then(data => {
             if (data === undefined) {
@@ -28,6 +35,12 @@ module.exports.UpdateDataAdmin = (req, res) => {
         })
 }
 
+/**
+ * 
+ * @param {object} req con la informacion para actualizar la clave de un usuario
+ * @returns un objeto con un mensaje de estado
+ */
+
 module.exports.UpdatePassAdmin = (req, res) => {
     const data = req.body
     admin.UpdatePass(data)
@@ -48,6 +61,12 @@ module.exports.UpdatePassAdmin = (req, res) => {
         })
 }
 
+/**
+ * 
+ * @param {object} req con el estado del usuario para actualizarlo
+ * @returns un objeto con un mensaje de estado
+ */
+
 module.exports.UserStateUpdate = (req, res) => {
     const data = req.body
     admin.ChangeState(data)
@@ -65,6 +84,12 @@ module.exports.UserStateUpdate = (req, res) => {
             }
         })
 }
+
+/**
+ * 
+ * @param {object} req con el id del usuario a eliminar
+ * @returns un objeto con un mensaje de estado
+ */
 
 module.exports.DeleteUser = (req, res) => {
     const {id} = req.body
