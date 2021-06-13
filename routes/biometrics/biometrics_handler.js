@@ -3,6 +3,12 @@ const   Token             = require('../../models/token'),
         { v4: uuidv4 }    = require('uuid'),
         fs                = require('fs');
 
+/**
+ * 
+ * @param {object} req con los datos a validar
+ * @returns un objeto con un mensaje de estado
+ */
+
 module.exports.validData = (req,res,next) =>{
     const {code, pass, id, fingerName} = req.body;
 
@@ -93,6 +99,12 @@ module.exports.validData = (req,res,next) =>{
     next();
 }
 
+/**
+ * 
+ * @param {object} req con el codigo del usuario para registrarlo
+ * @returns un objeto con un mensaje de estado
+ */
+
 module.exports.setCode = async (req,res) =>{
     const token = req.cookies;
     const decode = await Token.verifyToken(token.userToken);
@@ -112,6 +124,12 @@ module.exports.setCode = async (req,res) =>{
         });
     });
 }
+
+/**
+ * 
+ * @param {object} req con el codigo a verificar
+ * @returns un objeto con un estado
+ */
 
 module.exports.verifyCode = (req, res) => {
     const pass = req.body.pass;
@@ -158,6 +176,12 @@ module.exports.verifyCode = (req, res) => {
     })
 }
 
+/**
+ * 
+ * @param {object} req con el id del usuario para obtener su codigo
+ * @returns un objeto con un mensaje de estado y el codigo del usuario
+ */
+
 module.exports.getCode = async (req,res) =>{
     const token = req.cookies;
     const decode = await Token.verifyToken(token.userToken);
@@ -177,6 +201,12 @@ module.exports.getCode = async (req,res) =>{
         });
     });
 }
+
+/**
+ * 
+ * @param {object} req con el id del usuario y la huella a registrar
+ * @returns un objeto con un mensaje de estado 
+ */
 
 module.exports.setFinger = async (req,res) =>{
     const { finger } = req.files;
@@ -214,6 +244,12 @@ module.exports.setFinger = async (req,res) =>{
     });
 }
 
+/**
+ * 
+ * @param {object} req con el id del usuario para obtener su huella
+ * @returns un objeto con un mensaje de estado y la huella del usuario
+ */
+
 module.exports.getFinger = async (req,res) =>{
     const token = req.cookies;
     const decode = await Token.verifyToken(token.userToken);
@@ -234,6 +270,12 @@ module.exports.getFinger = async (req,res) =>{
         });
     });
 }
+
+/**
+ * 
+ * @param {object} req con el id del usuario para eliminar un metodo de autenticacion
+ * @returns un objeto con un mensaje de estado
+ */
 
 module.exports.deleteMethod = async (req,res) =>{
     const { id } = req.body;
@@ -258,6 +300,12 @@ module.exports.deleteMethod = async (req,res) =>{
         });
     });
 }
+
+/**
+ * 
+ * @param {object} req con el id del usuario para registrar un metodo de reconocimiento facial
+ * @returns un objeto con un mensaje de estado
+ */
 
 module.exports.setFace = async (req,res) =>{
     console.log(req.files)
@@ -295,6 +343,12 @@ module.exports.setFace = async (req,res) =>{
         }
     });
 }
+
+/**
+ * 
+ * @param {object} req con el id del usuario para obtener un metodo de reconocimiento facial
+ * @returns un objeto con un mensaje de estado y la foto del usuario para el reconocimiento facial
+ */
 
 module.exports.getFace = async (req,res) =>{
     const token = req.cookies;
