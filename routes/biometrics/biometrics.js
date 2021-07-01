@@ -247,8 +247,8 @@ exports.setFinger = (finger, id, fingerName) => {
 
 exports.getFinger = (id) => {
     return new Promise( (resolve, reject) =>{
-        DB.query('SELECT data FROM biometrics WHERE IDUser = ? AND IDSecurity = ?', [id, 2], (err,res) =>{
-            console.log(res[0].data);
+        DB.query('SELECT data, fingerName FROM biometrics WHERE IDUser = ? AND IDSecurity = ? AND isActive = 1', [id, 2], (err,res) =>{
+            console.log(res);
             if(err){
                 console.error('Ha ocurrido un error al solicitar la imagen', err.stack);
                 return reject({
@@ -256,9 +256,16 @@ exports.getFinger = (id) => {
                     msg: 'Ha ocurrido un error al obtener la imagen del dedo'
                 })
             } else {
+                if(res[0] === undefined) {
+                    return resolve({
+                        query: true,
+                        data: false,
+                        msg: "No hay huella activa y/o creada"
+                    })
+                }
                 return resolve({
                     query: true,
-                    data: res[0].data,
+                    data: res,
                     msg: "Exito"
                 })
             }
@@ -390,8 +397,8 @@ exports.setFace = (face, id) => {
 
 exports.getFace = (id) => {
     return new Promise( (resolve, reject) =>{
-        DB.query('SELECT data FROM biometrics WHERE IDUser = ? AND IDSecurity = ?', [id, 3], (err,res) =>{
-            console.log(res[0].data);
+        DB.query('SELECT data FROM biometrics WHERE IDUser = ? AND IDSecurity = ? AND isActive = 1', [id, 3], (err,res) =>{
+            console.log(res);
             if(err){
                 console.error('Ha ocurrido un error al solicitar la imagen', err.stack);
                 return reject({
@@ -399,6 +406,13 @@ exports.getFace = (id) => {
                     msg: 'Ha ocurrido un error al obtener la imagen facial'
                 })
             } else {
+                if(res[0] === undefined) {
+                    return resolve({
+                        query: true,
+                        data: false,
+                        msg: "No hay cara activa y/o creada"
+                    })    
+                }
                 return resolve({
                     query: true,
                     data: res[0].data,

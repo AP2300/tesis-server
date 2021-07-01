@@ -53,7 +53,7 @@ app.post('/setCode', middle.authHeader, middle.validSign, user.InSession, biomet
 app.get('/verifyCode', biometrics.verifyCode);
 app.get('/getCode', middle.authHeader, middle.validSign, user.InSession, biometrics.validData, biometrics.getCode);
 app.post('/setFinger', middle.authHeader, middle.validSign, user.InSession, biometrics.validData, biometrics.setFinger);
-app.get('/getFinger', middle.authHeader, middle.validSign, user.InSession, biometrics.validData, biometrics.getFinger);
+app.get('/getFinger', middle.authHeader, middle.validSign, biometrics.validData, biometrics.getFinger);
 app.post('/setFace', middle.authHeader, middle.validSign, user.InSession, biometrics.validData, biometrics.setFace);
 app.get('/getFace', middle.authHeader, middle.validSign, biometrics.validData, biometrics.getFace);
 app.post('/setRecord', middle.authHeader, middle.validSign, records.validData, records.setRecord);
