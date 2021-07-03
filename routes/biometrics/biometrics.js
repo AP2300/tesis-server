@@ -197,7 +197,7 @@ exports.setFinger = (finger, id, fingerName) => {
                             });
                         });
                     } else if (results.length == 0) {
-                        conn.query('INSERT INTO biometrics SET ?', {IDSecurity: 2, IDUser: id, data: finger, IsActive: 1, fingerName}, (err ,res, fields) =>{
+                        conn.query('INSERT INTO biometrics SET ?', {IDSecurity: 2, IDUser: id, data: finger, IsActive: 1, fingerName}, (err ,res) =>{
                             console.log("segundo query")
                             if(err){
                                 console.error('Ha ocurrido un error al solicitar data', err.stack);
@@ -238,6 +238,7 @@ exports.setFinger = (finger, id, fingerName) => {
         })
     });
 };
+
 
 /**
  * 
