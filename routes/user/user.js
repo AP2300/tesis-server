@@ -2,6 +2,8 @@ const DB = require('../../connections/Dbconection');
 const bcrypt = require('bcryptjs');
 const { isNull } = require('lodash');
 
+
+
 exports.GetData = (email) => {
     return new Promise((resolve, reject) => {
         DB.query('SELECT IDUser, FullName, Email, IsActive, IsAdmin, Picture FROM users WHERE Email= ?', [email], (err, res) => {
@@ -206,8 +208,10 @@ exports.inSession = (id, token) => {
             }
             if (res[0].Session !== token) {                
                 resolve(false);
+                console.log('Revisando Session xd, hora',new Date().getHours(),new Date().getMinutes(),new Date().getSeconds());
             }
             else {
+                console.log('Actualizando el Evento (InSession), hora',new Date().getHours(),new Date().getMinutes(),new Date().getSeconds());
                 DB.query(`ALTER EVENT event_User_? ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 5 MINUTE`, [id], (error, response) => {
                     if (error) {
                         console.error("error al editar el evento", error.stack)

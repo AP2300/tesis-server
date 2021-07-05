@@ -53,7 +53,9 @@ exports.ActiveSession = (id,token) => {
             }
             if (!isNull(res[0].Session)) {
                 return resolve(false);
+                console.log('NO es nula la sesion, hora',new Date().getHours(),new Date().getMinutes(),new Date().getSeconds());
             } else {
+                console.log('Actualizando Evento, hora',new Date().getHours(),new Date().getMinutes(),new Date().getSeconds());
                 DB.query("UPDATE `users` SET `Session` = ? WHERE `users`.`IDUser` = ?", [token, id], (error, re) => {
                     if (error) {
                         console.error('Ha ocurrido un error al solicitar data', error.stack);
@@ -99,6 +101,7 @@ exports.CheckIfActive = (id, token) =>{
             }
             if(res[0].Session === token){
                 return resolve(true);
+                console.log('Si hay session, hora',new Date().getHours(),new Date().getMinutes(),new Date().getSeconds());
             }else{
                 DB.query(`ALTER EVENT event_User_? DISABLE`, [id], (err, response) => {
                     if (err) {
@@ -108,6 +111,7 @@ exports.CheckIfActive = (id, token) =>{
                             msg: 'Ha ocurrido un error en el checkSession'
                         })
                     }
+                    console.log('borre el evento, hora',new Date().getHours(),new Date().getMinutes(),new Date().getSeconds());
                     DB.query("UPDATE `users` SET `Session` = NULL WHERE `users`.`IDUser` = ?", [id], (error, re) => {
                         if (error) {
                             console.error('Ha ocurrido un error al solicitar data', error.stack);
@@ -116,6 +120,7 @@ exports.CheckIfActive = (id, token) =>{
                                 msg: 'Ha ocurrido un error en el checkSession al alterar session en el usuario'
                             })
                         }
+                        console.log('Session eliminada, hora',new Date().getHours(),new Date().getMinutes(),new Date().getSeconds());
                         resolve(false)
                     })
                 })
