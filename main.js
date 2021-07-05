@@ -26,8 +26,13 @@ app.use(cookieParser(process.env.COOKIE_SECRET, {
 app.use(express.static(__dirname + '/resources/uploads'));
 app.use(express.json({ 'limit': '1mb' }));
 app.disable('x-powered-by');
-app.all('*', function (_, res, next) {
-    res.header('Access-Control-Allow-Origin', ' http://192.168.31.10:3000');
+app.all('*', function (req, res, next) {
+    // const allowedOrigins = ['http://localhost:3000/', 'http://192.168.1.120:3000/'];
+    // const origin = req.headers.origin;
+    // if (allowedOrigins.includes(origin)) {
+    //     res.setHeader('Access-Control-Allow-Origin', origin);
+    // }
+    res.header('Access-Control-Allow-Origin', ' http://192.168.1.120:3000 ');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,HEAD');
     res.header('Access-Control-Allow-Headers', 'Content-Type, auth, Content-Length, X-Requested-With');
     res.header('Access-Control-Allow-Credentials', 'true');
