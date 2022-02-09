@@ -13,7 +13,7 @@ const express = require("express"),
 
 // Configuracion del Servidor
 dotenv.config()
-app.set("port", 3001);
+app.set("port", process.env.PORT||3001);
 app.use(express.urlencoded({ extended: true }));
 app.use(FP());
 app.use(cookieParser(process.env.COOKIE_SECRET, {
@@ -31,7 +31,7 @@ app.all('*', function (req, res, next) {
     if (allowedOrigins.includes(origin)) {
         res.setHeader('Access-Control-Allow-Origin', origin);
     }
-    res.header('Access-Control-Allow-Origin', ' http://172.28.153.230:3000 ');
+    res.header('Access-Control-Allow-Origin', 'https://datasec-frontend.herokuapp.com');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,HEAD');
     res.header('Access-Control-Allow-Headers', 'Content-Type, auth, Content-Length, X-Requested-With');
     res.header('Access-Control-Allow-Credentials', 'true');
