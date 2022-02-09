@@ -1,11 +1,21 @@
 const mysql = require("mysql");
 
+// module.exports = mysql.createPool({
+//     connectionLimit : 10,
+//     host            : "172.28.153.230",  
+//     port            : "3306",
+//     user            : 'tesis',
+//     password        : 'tucacas',
+//     database        : 'tesis'
+//   });
+
+
 module.exports = mysql.createPool({
     connectionLimit : 10,
-    host            : "172.28.153.230",  
-    port            : "3306",
-    user            : 'tesis',
-    password        : 'tucacas',
+    host            : "mysql-68463-0.cloudclusters.net",  
+    port            : "17178",
+    user            : 'admin',
+    password        : 'crhfVDQz',
     database        : 'tesis'
   });
 
