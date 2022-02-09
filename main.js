@@ -31,7 +31,7 @@ app.all('*', function (req, res, next) {
     if (allowedOrigins.includes(origin)) {
         res.setHeader('Access-Control-Allow-Origin', origin);
     }
-    res.header('Access-Control-Allow-Origin', 'https://datasec-frontend.herokuapp.com');
+    res.header('Access-Control-Allow-Origin', 'https://620322985de6a635120a7721--zealous-pare-41c704.netlify.app');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,HEAD');
     res.header('Access-Control-Allow-Headers', 'Content-Type, auth, Content-Length, X-Requested-With');
     res.header('Access-Control-Allow-Credentials', 'true');
