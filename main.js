@@ -14,6 +14,7 @@ const express = require("express"),
 // Configuracion del Servidor
 dotenv.config()
 app.set("port", process.env.PORT||3001);
+app.set('trust proxy', 1);
 app.use(express.urlencoded({ extended: true }));
 app.use(FP());
 app.use(cookieParser(process.env.COOKIE_SECRET, {
