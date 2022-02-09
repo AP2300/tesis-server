@@ -19,8 +19,7 @@ app.use(FP());
 app.use(cookieParser(process.env.COOKIE_SECRET, {
     expires: null,
     httpOnly: true,
-    maxAge: null,
-    sameSite: 'lax'
+    maxAge: null
 }));
 app.use(express.static(__dirname + '/resources/uploads'));
 app.use(express.json({ 'limit': '1mb' }));
