@@ -77,9 +77,10 @@ module.exports.loginUser = (req, res) => {
                                                 })
                                             } else if (Session) {
                                                 res.cookie('userToken', token, {
-                                                    // expires: new Date(Date.now() + 1000000),
-                                                    httpOnly: true
-                                                }, { signed: true })
+                                                    httpOnly:true,
+                                                    secure:true,
+                                                    sameSite:'none'
+                                                })
 
                                                 res.status(200).send({
                                                     success: true,
